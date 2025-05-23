@@ -4,7 +4,7 @@ Ini adalah proyek Tugas Besar Pemecahan Masalah dengan Pemrograman (PMP) untuk m
 
 ## Deskripsi Proyek
 
-Aplikasi ini bertujuan untuk mengotomatisasi proses penjadwalan jaga dokter di RS Semoga Sehat Selalu selama periode 30 hari[cite: 1, 19]. Setiap hari dibagi menjadi tiga *shift*: pagi, siang, dan malam. Setiap *shift* harus diisi oleh minimal satu dokter[cite: 2, 20]. Sistem ini akan mempertimbangkan batasan seperti jumlah *shift* maksimal per minggu untuk setiap dokter, serta preferensi *shift* masing-masing dokter (misalnya, tidak ingin *shift* malam)[cite: 3, 21].
+Aplikasi ini bertujuan untuk mengotomatisasi proses penjadwalan jaga dokter di Rumah sakit selama periode 30 hari[cite: 1, 19]. Setiap hari dibagi menjadi tiga *shift*: pagi, siang, dan malam. Setiap *shift* harus diisi oleh minimal satu dokter[cite: 2, 20]. Sistem ini akan mempertimbangkan batasan seperti jumlah *shift* maksimal per minggu untuk setiap dokter, serta preferensi *shift* masing-masing dokter (misalnya, tidak ingin *shift* malam)[cite: 3, 21].
 
 Tujuan utama adalah untuk menghasilkan jadwal jaga yang efisien, memenuhi kebutuhan jumlah dokter di setiap *shift*, tidak melebihi beban kerja dokter, dan sebisa mungkin menghormati preferensi dokter[cite: 4, 22].
 
