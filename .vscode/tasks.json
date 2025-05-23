@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build (Makefile)",
+            "type": "shell",
+            "command": "make", // Perintah untuk menjalankan make
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc" // Untuk menangkap error dan warning dari GCC
+            ],
+            "detail": "Runs make to build the project"
+        },
+        {
+            "label": "run (Makefile)",
+            "type": "shell",
+            "command": "make run", // Perintah untuk menjalankan make run
+            "group": "test", // Bisa juga "build"
+            "detail": "Runs the compiled program"
+        },
+        {
+            "label": "clean (Makefile)",
+            "type": "shell",
+            "command": "make clean", // Perintah untuk menjalankan make clean
+            "group": "clean",
+            "detail": "Cleans build artifacts"
+        }
+    ]
+}
