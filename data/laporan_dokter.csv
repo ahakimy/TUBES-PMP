@@ -1,0 +1,16 @@
+Nama,Bidang,Tingkat,Total_Shift,Max_Per_Minggu,Pref_Shift,Pref_Waktu,Pelanggaran,Minggu_1,Minggu_2,Minggu_3,Minggu_4,Minggu_5,Shift_Pagi,Shift_Siang,Shift_Malam
+Andi Kurniawan,Bedah Umum,Koass,14,6,Pagi,Campur,0,2,3,4,4,1,14,0,0
+Budi Santoso,Bedah Onkologi,Residen,13,5,Siang,Akhir Bulan,5,2,2,4,4,1,0,12,1
+Chika Rahmawati,Bedah Saraf,Spesialis,9,4,Pagi,Awal Bulan,2,4,4,0,1,0,8,0,1
+Dodi Wirawan,Penyakit Dalam,Konsulen,10,2,Siang,Akhir Bulan,5,2,2,2,2,2,0,8,2
+Eka Prasetya,Gastroenterologi,Koass,1,6,Malam,Campur,1,0,1,0,0,0,0,1,0
+Fatma Dewi,Alergi dan Imunologi,Spesialis,10,4,Pagi,Awal Bulan,2,4,4,1,1,0,10,0,0
+Gilang Perdana,Endokrin,Residen,15,5,Siang,Akhir Bulan,6,3,2,4,4,2,0,13,2
+Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,10,2,Pagi,Akhir Bulan,4,2,2,2,2,2,6,0,4
+Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,17,4,Malam,Awal Bulan,8,4,4,4,4,1,0,0,17
+Joko Prabowo,Paru,Residen,16,5,Siang,Campur,2,5,5,3,3,0,0,14,2
+Kania Meilani,Anak,Koass,15,6,Pagi,Campur,0,2,2,5,5,1,15,0,0
+Lukman Hakim,THT,Spesialis,17,4,Malam,Awal Bulan,8,4,4,4,4,1,0,0,17
+Maya Sari,Kulit dan Kelamin,Residen,13,5,Siang,Akhir Bulan,8,3,2,3,4,1,0,9,4
+Niko Aditya,Mata,Konsulen,8,2,Pagi,Awal Bulan,2,2,2,2,2,0,7,0,1
+Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,12,4,Siang,Akhir Bulan,11,3,3,4,2,0,0,3,9
