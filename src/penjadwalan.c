@@ -2,20 +2,106 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "../include/penjadwalan.h"
-#include "../include/dokter.h"
 
-// Definisi variabel global
-int DOCTORS_PER_SHIFT = 2; // Default 2 dokter per shift, dapat diubah
+// Definisi konstanta untuk ukuran maksimum dan jumlah shift
+#define MAX_DOCTORS 50
+#define MAX_NAME_LEN 100
+#define DAYS_IN_MONTH 30
+#define SHIFTS_PER_DAY 3
+#define MAX_DOCTORS_PER_SHIFT 5
+#define TOTAL_SHIFTS (DAYS_IN_MONTH * SHIFTS_PER_DAY)
+
+// UBAH NILAI INI UNTUK MENGATUR JUMLAH DOKTER PER SHIFT
+int DOCTORS_PER_SHIFT = 2; // <-- UBAH DISINI untuk mengatur berapa dokter per shift
+
+// Enumerasi untuk jenis shift
+typedef enum {
+    SHIFT_PAGI = 0,
+    SHIFT_SIANG = 1,
+    SHIFT_MALAM = 2
+} ShiftType;
+
+// Enumerasi untuk tingkat dokter
+typedef enum {
+    TINGKAT_KOASS = 0,
+    TINGKAT_RESIDEN,
+    TINGKAT_SPESIALIS,
+    TINGKAT_KONSULEN
+} TingkatDokter;
+
+// Enumerasi untuk preferensi waktu shift
+typedef enum {
+    WAKTU_AWAL_BULAN = 0,
+    WAKTU_AKHIR_BULAN,
+    WAKTU_CAMPUR
+} PreferensiWaktu;
+
+// Struktur data untuk menyimpan informasi dokter
+typedef struct {
+    char name[MAX_NAME_LEN];
+    char bidang[MAX_NAME_LEN];
+    TingkatDokter tingkat;
+    int max_shifts_per_week;
+    ShiftType preferred_shift;
+    PreferensiWaktu preferred_time;
+    int total_shifts_assigned;
+    int weekly_shifts[5]; // Jumlah shift per minggu (untuk 5 minggu dalam sebulan)
+    int shift_count[3]; // Jumlah shift pagi, siang, malam
+    int violation_count; // Jumlah pelanggaran preferensi
+} Doctor;
+
+// Struktur data untuk menyimpan entri jadwal (support multiple dokter per shift)
+typedef struct {
+    int day;
+    int shift;
+    int doctor_ids[MAX_DOCTORS_PER_SHIFT];
+    int num_doctors;
+} Schedule;
+
+// Deklarasi variabel global
+Doctor doctors[MAX_DOCTORS];
+int num_doctors = 0;
 Schedule schedule[TOTAL_SHIFTS];
 int schedule_count = 0;
 
-// Fungsi untuk menghasilkan jadwal otomatis
-void generate_schedule(Doctor* doctors, int num_doctors) {
-    schedule_count = 0;
+// Deklarasi fungsi-fungsi
+int load_doctors_from_csv(const char* filename);
+void generate_schedule();
+void save_schedule();
+void save_report();
+int get_week_number(int day);
+int is_early_month(int day);
+int is_doctor_available(int id, int day, int shift);
+int calculate_score(int id, int day, int shift);
+void assign_shift(int day, int shift, int doctor_id);
+int is_doctor_already_assigned(int day, int shift, int doctor_id);
+
+// Fungsi utama program
+int main() {
+    // Memuat data dokter dari file CSV
+    if (!load_doctors_from_csv("daftar_dokter.csv")) {
+        printf("ERROR: Gagal membuka file 'daftar_dokter.csv'.\n");
+        return 1;
+    }
     
     // Initialize random seed
     srand((unsigned)time(NULL));
+    
+    // Menghasilkan jadwal otomatis
+    generate_schedule();
+    
+    // Menyimpan jadwal ke file CSV
+    save_schedule();
+    
+    // Menyimpan laporan ke file CSV
+    save_report();
+    
+    return 0;
+}
+
+// Fungsi untuk menghasilkan jadwal otomatis
+void generate_schedule() {
+    schedule_count = 0;
 
     // Loop untuk setiap hari dalam sebulan
     for (int day = 0; day < DAYS_IN_MONTH; ++day) {
@@ -31,13 +117,13 @@ void generate_schedule(Doctor* doctors, int num_doctors) {
                 // Loop untuk setiap dokter untuk menemukan dokter terbaik untuk slot ini
                 for (int i = 0; i < num_doctors; ++i) {
                     // Lewati dokter jika tidak tersedia untuk shift ini
-                    if (!is_doctor_available(doctors, i, day, shift)) continue;
+                    if (!is_doctor_available(i, day, shift)) continue;
                     
                     // Lewati dokter jika sudah ditugaskan untuk shift ini
                     if (is_doctor_already_assigned(day, shift, i)) continue;
 
                     // Hitung skor dokter untuk shift ini
-                    int score = calculate_score(doctors, i, day, shift);
+                    int score = calculate_score(i, day, shift);
                     // Tambahkan sedikit randomness untuk menghindari bias jika skor sama
                     score += rand() % 3;
 
@@ -52,7 +138,7 @@ void generate_schedule(Doctor* doctors, int num_doctors) {
                 if (best_doctor >= 0) {
                     current_schedule.doctor_ids[current_schedule.num_doctors] = best_doctor;
                     current_schedule.num_doctors++;
-                    assign_shift(doctors, day, shift, best_doctor);
+                    assign_shift(day, shift, best_doctor);
                 } else {
                     break; // Berhenti mencari slot tambahan jika tidak ada dokter
                 }
@@ -80,7 +166,7 @@ int is_doctor_already_assigned(int day, int shift, int doctor_id) {
 }
 
 // Fungsi untuk menghitung skor dokter untuk shift tertentu
-int calculate_score(Doctor* doctors, int id, int day, int shift) {
+int calculate_score(int id, int day, int shift) {
     int score = 0;
 
     // Poin untuk preferensi shift
@@ -123,7 +209,7 @@ int calculate_score(Doctor* doctors, int id, int day, int shift) {
 }
 
 // Fungsi untuk menugaskan shift kepada dokter
-void assign_shift(Doctor* doctors, int day, int shift, int doctor_id) {
+void assign_shift(int day, int shift, int doctor_id) {
     int week = get_week_number(day);
 
     // Perbarui statistik dokter
@@ -141,52 +227,11 @@ void assign_shift(Doctor* doctors, int day, int shift, int doctor_id) {
     doctors[doctor_id].violation_count += violation;
 }
 
-// Fungsi untuk mengecek ketersediaan dokter untuk shift tertentu
-int is_doctor_available(Doctor* doctors, int id, int day, int shift) {
-    // Periksa apakah Koass diizinkan untuk shift malam
-    if (doctors[id].tingkat == TINGKAT_KOASS && shift == SHIFT_MALAM) {
-        return 0;
-    }
-
-    // Periksa apakah beban kerja mingguan sudah melebihi batas
-    int week = get_week_number(day);
-    if (doctors[id].weekly_shifts[week] >= doctors[id].max_shifts_per_week) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// Fungsi pembantu: mendapatkan nomor minggu dari hari (0-indexed)
-int get_week_number(int day) {
-    return day / 7;
-}
-
-// Fungsi pembantu: mengecek apakah hari berada di awal bulan (sebelum hari ke-15)
-int is_early_month(int day) {
-    return day < 15;
-}
-
-// Fungsi parsing untuk membaca preferensi shift dari string CSV
-ShiftType parse_shift(const char* s) {
-    if (strstr(s, "Pagi")) return SHIFT_PAGI;
-    if (strstr(s, "Siang")) return SHIFT_SIANG;
-    if (strstr(s, "Malam")) return SHIFT_MALAM;
-    return SHIFT_PAGI;
-}
-
-// Fungsi parsing untuk membaca preferensi waktu dari string CSV
-PreferensiWaktu parse_waktu(const char* s) {
-    if (strstr(s, "Awal")) return WAKTU_AWAL_BULAN;
-    if (strstr(s, "Akhir")) return WAKTU_AKHIR_BULAN;
-    return WAKTU_CAMPUR;
-}
-
-// Fungsi untuk menyimpan jadwal ke file CSV di folder data
-void save_schedule_to_csv(Doctor* doctors, int num_doctors) {
-    FILE* f = fopen("../data/jadwal_dokter.csv", "w");
+// Fungsi untuk menyimpan jadwal ke file CSV
+void save_schedule() {
+    FILE* f = fopen("jadwal_dokter.csv", "w");
     if (!f) {
-        printf("ERROR: Gagal membuat file '../data/jadwal_dokter.csv'\n");
+        printf("ERROR: Gagal membuat file 'jadwal_dokter.csv'\n");
         return;
     }
     
@@ -219,5 +264,140 @@ void save_schedule_to_csv(Doctor* doctors, int num_doctors) {
     }
 
     fclose(f);
-    printf("Jadwal berhasil disimpan ke '../data/jadwal_dokter.csv'\n");
+}
+
+// Fungsi untuk menyimpan laporan ke file CSV
+void save_report() {
+    FILE* f = fopen("laporan_dokter.csv", "w");
+    if (!f) {
+        printf("ERROR: Gagal membuat file 'laporan_dokter.csv'\n");
+        return;
+    }
+    
+    fprintf(f, "Nama,Bidang,Tingkat,Total_Shift,Max_Per_Minggu,Pref_Shift,Pref_Waktu,Pelanggaran,");
+    fprintf(f, "Minggu_1,Minggu_2,Minggu_3,Minggu_4,Minggu_5,");
+    fprintf(f, "Shift_Pagi,Shift_Siang,Shift_Malam\n");
+
+    const char* shift_pref_str[] = {"Pagi", "Siang", "Malam"};
+    const char* waktu_pref_str[] = {"Awal Bulan", "Akhir Bulan", "Campur"};
+    const char* tingkat_str[] = {"Koass", "Residen", "Spesialis", "Konsulen"};
+
+    for (int i = 0; i < num_doctors; i++) {
+        Doctor* d = &doctors[i];
+        fprintf(f, "%s,%s,%s,%d,%d,%s,%s,%d,",
+                d->name,
+                d->bidang,
+                tingkat_str[d->tingkat],
+                d->total_shifts_assigned,
+                d->max_shifts_per_week,
+                shift_pref_str[d->preferred_shift],
+                waktu_pref_str[d->preferred_time],
+                d->violation_count);
+        for (int j = 0; j < 5; j++) fprintf(f, "%d,", d->weekly_shifts[j]);
+        fprintf(f, "%d,%d,%d\n", d->shift_count[0], d->shift_count[1], d->shift_count[2]);
+    }
+
+    fclose(f);
+}
+
+// Fungsi pembantu: mendapatkan nomor minggu dari hari (0-indexed)
+int get_week_number(int day) {
+    return day / 7;
+}
+
+// Fungsi pembantu: mengecek apakah hari berada di awal bulan (sebelum hari ke-15)
+int is_early_month(int day) {
+    return day < 15;
+}
+
+// Fungsi untuk mengecek ketersediaan dokter untuk shift tertentu
+int is_doctor_available(int id, int day, int shift) {
+    if (id >= num_doctors) return 0;
+
+    // Periksa apakah Koass diizinkan untuk shift malam
+    if (doctors[id].tingkat == TINGKAT_KOASS && shift == SHIFT_MALAM) {
+        return 0;
+    }
+
+    // Periksa apakah beban kerja mingguan sudah melebihi batas
+    int week = get_week_number(day);
+    if (doctors[id].weekly_shifts[week] >= doctors[id].max_shifts_per_week) {
+        return 0;
+    }
+
+    return 1;
+}
+
+// Fungsi parsing
+ShiftType parse_shift(const char* s) {
+    if (strstr(s, "Pagi")) return SHIFT_PAGI;
+    if (strstr(s, "Siang")) return SHIFT_SIANG;
+    if (strstr(s, "Malam")) return SHIFT_MALAM;
+    return SHIFT_PAGI;
+}
+
+TingkatDokter parse_tingkat(const char* s) {
+    if (strstr(s, "Koass")) return TINGKAT_KOASS;
+    if (strstr(s, "Residen")) return TINGKAT_RESIDEN;
+    if (strstr(s, "Spesialis")) return TINGKAT_SPESIALIS;
+    if (strstr(s, "Konsulen")) return TINGKAT_KONSULEN;
+    return TINGKAT_KOASS;
+}
+
+PreferensiWaktu parse_waktu(const char* s) {
+    if (strstr(s, "Awal")) return WAKTU_AWAL_BULAN;
+    if (strstr(s, "Akhir")) return WAKTU_AKHIR_BULAN;
+    return WAKTU_CAMPUR;
+}
+
+// Fungsi untuk memuat data dokter dari file CSV
+int load_doctors_from_csv(const char* filename) {
+    FILE* f = fopen(filename, "r");
+    if (!f) return 0;
+
+    char line[512];
+    // Baca baris header
+    if (!fgets(line, sizeof(line), f)) {
+        fclose(f);
+        return 0;
+    }
+    
+    // Baca setiap baris data dokter
+    while (fgets(line, sizeof(line), f) && num_doctors < MAX_DOCTORS) {
+        Doctor* d = &doctors[num_doctors];
+        char* token;
+
+        // Nama
+        token = strtok(line, ",");
+        if (token) strcpy(d->name, token); else continue;
+
+        // Bidang
+        token = strtok(NULL, ",");
+        if (token) strcpy(d->bidang, token); else continue;
+
+        // Tingkat
+        token = strtok(NULL, ",");
+        if (token) d->tingkat = parse_tingkat(token); else continue;
+
+        // Max Shift Per Minggu
+        token = strtok(NULL, ",");
+        if (token) d->max_shifts_per_week = atoi(token); else continue;
+
+        // Preferred Shift
+        token = strtok(NULL, ",");
+        if (token) d->preferred_shift = parse_shift(token); else continue;
+
+        // Preferred Time
+        token = strtok(NULL, ",\n\r");
+        if (token) d->preferred_time = parse_waktu(token); else continue;
+
+        // Inisialisasi statistik dokter
+        d->total_shifts_assigned = d->violation_count = 0;
+        memset(d->weekly_shifts, 0, sizeof(d->weekly_shifts));
+        memset(d->shift_count, 0, sizeof(d->shift_count));
+        num_doctors++;
+    }
+
+    fclose(f);
+    return 1;
 }
