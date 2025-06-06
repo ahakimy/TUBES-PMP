@@ -1,38 +1,47 @@
-# Output binary
-TARGET = bin/penjadwalan
+# Makefile untuk mengompilasi program penjadwalan dokter
 
-# Direktori
-SRC_DIR = src
-INC_DIR = include
-OBJ_DIR = build
-
-# Semua file .c di src
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-
-# Ganti ekstensi jadi .o dan simpan di build/
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-
-# Compiler dan flags
+# Compiler yang digunakan
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I$(INC_DIR)
 
-# Default target
+# Flag untuk kompilasi (mengaktifkan peringatan dan standar C99)
+CFLAGS = -Wall -std=c99 -Iinclude
+
+# Direktori untuk file sumber, header, dan output
+SRC_DIR = src
+INCLUDE_DIR = include
+BIN_DIR = bin
+
+# Nama file output (executable)
+TARGET = $(BIN_DIR)/scheduler
+
+# Daftar file sumber di folder src/
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+
+# Daftar file objek yang dihasilkan dari file sumber
+OBJECTS = $(SOURCES:.c=.o)
+
+# Header file yang menjadi dependensi
+HEADERS = $(wildcard $(INCLUDE_DIR)/*.h)
+
+# Aturan default: membangun executable
 all: $(TARGET)
 
-# Linking
-$(TARGET): $(OBJS)
-	@mkdir -p bin
-	$(CC) $(CFLAGS) -o $@ $^
+# Aturan untuk membuat executable dari file objek
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(OBJECTS) -o $(TARGET)
 
-# Compile tiap .c jadi .o
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+# Aturan untuk mengompilasi file sumber menjadi file objek
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean object dan binary
+# Aturan untuk membersihkan file hasil kompilasi
 clean:
-	rm -rf $(OBJ_DIR) bin
+	rm -f $(OBJECTS) $(TARGET)
 
-# Run (jalankan program setelah make)
-run: all
+# Aturan untuk menjalankan program setelah dikompilasi
+run: $(TARGET)
 	./$(TARGET)
+
+# Aturan untuk menandai bahwa 'clean' dan 'run' bukan file
+.PHONY: clean run
