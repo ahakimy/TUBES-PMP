@@ -3,50 +3,54 @@
 #include <string.h>
 #include "penjadwalan.h"
 
-// Global variables
-Doctor doctors[MAX_DOCTORS];
-int num_doctors = 0;
-Schedule schedule[DAYS_IN_MONTH * SHIFTS_PER_DAY];
-int schedule_count = 0;
-int DOCTORS_PER_SHIFT = 2;
+// Variabel global
+Doctor doctors[MAX_DOCTORS]; // Simpan data dokter
+int num_doctors = 0; // Hitung jumlah dokter
+Schedule schedule[DAYS_IN_MONTH * SHIFTS_PER_DAY]; // Simpan jadwal
+int schedule_count = 0; // Hitung entri jadwal
+int DOCTORS_PER_SHIFT = 2; // Jumlah dokter per shift
 
-// Internal helper functions
+// Fungsi bantu: Hitung minggu dari hari
 static int get_week_number(int day) {
     return day / 7;
 }
 
+// Fungsi bantu: Cek apakah hari awal bulan
 static int is_early_month(int day) {
     return day < 15;
 }
 
+// Fungsi bantu: Ubah string shift ke enum
 static ShiftType parse_shift(const char* s) {
     if (strstr(s, "Pagi")) return SHIFT_PAGI;
     if (strstr(s, "Siang")) return SHIFT_SIANG;
     if (strstr(s, "Malam")) return SHIFT_MALAM;
-    return SHIFT_PAGI;
+    return SHIFT_PAGI; // Default
 }
 
+// Fungsi bantu: Ubah string tingkat ke enum
 static TingkatDokter parse_tingkat(const char* s) {
     if (strstr(s, "Koass")) return TINGKAT_KOASS;
     if (strstr(s, "Residen")) return TINGKAT_RESIDEN;
     if (strstr(s, "Spesialis")) return TINGKAT_SPESIALIS;
     if (strstr(s, "Konsulen")) return TINGKAT_KONSULEN;
-    return TINGKAT_KOASS;
+    return TINGKAT_KOASS; // Default
 }
 
+// Fungsi bantu: Ubah string preferensi waktu ke enum
 static PreferensiWaktu parse_waktu(const char* s) {
     if (strstr(s, "Awal")) return WAKTU_AWAL_BULAN;
     if (strstr(s, "Akhir")) return WAKTU_AKHIR_BULAN;
-    return WAKTU_CAMPUR;
+    return WAKTU_CAMPUR; // Default
 }
 
-// CSV Reader
+// Fungsi: Muat data dari file CSV
 int load_doctors_from_csv(const char* filename) {
     FILE* f = fopen(filename, "r");
-    if (!f) return 0;
+    if (!f) return 0; // Gagal buka file
 
     char line[512];
-    fgets(line, sizeof(line), f); // skip header
+    fgets(line, sizeof(line), f); // Lewati header
 
     while (fgets(line, sizeof(line), f) && num_doctors < MAX_DOCTORS) {
         Doctor* d = &doctors[num_doctors];
@@ -78,15 +82,14 @@ int load_doctors_from_csv(const char* filename) {
 
         d->total_shifts_assigned = 0;
         memset(d->weekly_shifts, 0, sizeof(d->weekly_shifts));
-
         num_doctors++;
     }
 
     fclose(f);
-    return num_doctors > 0;
+    return num_doctors > 0; // Cek ada data atau tidak
 }
 
-// Assignment logic helpers
+// Fungsi bantu: Cek apakah dokter sudah ada di shift
 static int is_doctor_already_assigned(int day, int shift, int doctor_id, Schedule* current_schedule) {
     for (int i = 0; i < schedule_count; i++) {
         if (schedule[i].day == day && schedule[i].shift == shift) {
@@ -101,12 +104,14 @@ static int is_doctor_already_assigned(int day, int shift, int doctor_id, Schedul
     return 0;
 }
 
+// Fungsi bantu: Tambah shift ke dokter
 static void assign_shift(int day, int shift, int doctor_id) {
     int week = get_week_number(day);
     doctors[doctor_id].total_shifts_assigned++;
     doctors[doctor_id].weekly_shifts[week]++;
 }
 
+// Fungsi bantu: Hitung skor dokter
 static int calculate_score(int id, int day, int shift) {
     int score = 0;
 
@@ -132,7 +137,7 @@ static int calculate_score(int id, int day, int shift) {
     return score;
 }
 
-// Main scheduling function
+// Fungsi: Buat jadwal
 void generate_schedule() {
     schedule_count = 0;
 
@@ -145,7 +150,7 @@ void generate_schedule() {
                 int best_score = -9999;
 
                 for (int i = 0; i < num_doctors; i++) {
-                    if (is_doctor_already_assigned(day, shift, i, &current_schedule)) continue;
+                    if (is_doctor_already_assigned(day, shift, i, &current_schedule)) continue; 
                     int score = calculate_score(i, day, shift);
                     if (score > best_score) {
                         best_score = score;
@@ -153,10 +158,9 @@ void generate_schedule() {
                     }
                 }
 
-                // Fallback loop: assign anyone available
                 if (best_doctor < 0) {
                     for (int i = 0; i < num_doctors; i++) {
-                        if (is_doctor_already_assigned(day, shift, i, &current_schedule)) continue;
+                        if (is_doctor_already_assigned(day, shift, i, &current_schedule)) continue; 
                         best_doctor = i;
                         break;
                     }
@@ -173,16 +177,17 @@ void generate_schedule() {
     }
 }
 
-// Write output to file
+// Fungsi: Simpan jadwal ke file
 void save_schedule() {
     FILE* f = fopen(OUTPUT_FILE, "w");
-    if (!f) return;
+    if (!f) return; // Gagal buka file
 
     const char* hari[] = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};
     const char* shift_names[] = {"Pagi", "Siang", "Malam"};
     const char* tingkat_str[] = {"Koass", "Residen", "Spesialis", "Konsulen"};
 
     fprintf(f, "Tanggal,Hari,Shift,Nama_Dokter,Bidang,Tingkat\n");
+
     for (int i = 0; i < schedule_count; i++) {
         int d = schedule[i].day;
         int s = schedule[i].shift;
