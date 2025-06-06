@@ -1,22 +1,14 @@
 #include <stdio.h>
-#include <string.h> // Diperlukan untuk fungsi strcpy
-#include "dokter.h" // Meng-include header dokter.h
+#include "penjadwalan.h"
 
 int main() {
-    printf("Selamat datang di Aplikasi Penjadwalan Dokter!\n");
-    printf("--- Uji Coba Modul Dokter Dasar ---\n\n");
+    if (!load_doctors_from_csv("daftar_dokter.csv")) {
+        printf("Gagal membaca daftar dokter.\n");
+        return 1;
+    }
 
-    // Membuat objek Dokter
-    Dokter dokterUji;
+    generate_schedule();
+    save_schedule();
 
-    // Mengisi data dokter uji
-    // Menggunakan strcpy karena nama adalah array of char (string)
-    strcpy(dokterUji.nama, "Dr. Siti Aminah");
-    dokterUji.max_shift_per_minggu = 6;
-
-    // Memanggil fungsi dari modul dokter.c melalui header dokter.h
-    tampilkanInfoDokterDasar(&dokterUji);
-
-    printf("\n--- Uji Coba Selesai ---\n");
     return 0;
 }
