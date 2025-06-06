@@ -155,7 +155,7 @@ void tulis_laporan(const char *filename) {
     fclose(fp);
     printf("Laporan berhasil disimpan ke %s\n", filename);
 }
-
+/*
 int main() {
     load_shift_data("jadwal_dokter.csv");
     load_doctor_data("daftar_dokter.csv");
@@ -165,3 +165,4 @@ int main() {
 
     return 0;
 }
+*/

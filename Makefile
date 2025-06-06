@@ -1,27 +1,38 @@
-# Nama file output
-TARGET = penjadwalan
+# Output binary
+TARGET = bin/penjadwalan
 
-# Daftar file sumber
-SRCS = main.c penjadwalan.c
+# Direktori
+SRC_DIR = src
+INC_DIR = include
+OBJ_DIR = build
 
-# Nama file objek yang otomatis dihasilkan
-OBJS = $(SRCS:.c=.o)
+# Semua file .c di src
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+
+# Ganti ekstensi jadi .o dan simpan di build/
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 # Compiler dan flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -O2
+CFLAGS = -Wall -Wextra -std=c99 -I$(INC_DIR)
 
-# Target default
+# Default target
 all: $(TARGET)
 
 # Linking
 $(TARGET): $(OBJS)
+	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Rule untuk file .o
-%.o: %.c
+# Compile tiap .c jadi .o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Bersih-bersih file objek dan executable
+# Clean object dan binary
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -rf $(OBJ_DIR) bin
+
+# Run (jalankan program setelah make)
+run: all
+	./$(TARGET)

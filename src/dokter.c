@@ -102,7 +102,7 @@ void load_data() {
     fclose(fp);
 }
 
-int main() {
+/* int main() {
     load_data();
     int pilihan;
 
@@ -125,4 +125,4 @@ int main() {
     } while (pilihan != 4);
 
     return 0;
-}
+} */
