@@ -1,20 +1,44 @@
 #ifndef PENJADWALAN_H
 #define PENJADWALAN_H
 
-#include "../include/dokter.h"
-
-// Definisi konstanta untuk penjadwalan
+// Konstanta umum
+#define MAX_DOCTORS 50
+#define MAX_NAME_LEN 100
 #define DAYS_IN_MONTH 30
 #define SHIFTS_PER_DAY 3
-#define MAX_DOCTORS_PER_SHIFT 5
-#define TOTAL_SHIFTS (DAYS_IN_MONTH * SHIFTS_PER_DAY)
+#define MAX_DOCTORS_PER_SHIFT 2
 
-// UBAH NILAI INI UNTUK MENGATUR JUMLAH DOKTER PER SHIFT
-extern int DOCTORS_PER_SHIFT; // Dapat diubah sesuai kebutuhan
+// Jenis shift dalam sehari
+typedef enum { SHIFT_PAGI = 0, SHIFT_SIANG, SHIFT_MALAM } ShiftType;
 
-// Enums sudah didefinisikan di dokter.h, tidak perlu define ulang
+// Jenjang/tingkat dokter
+typedef enum {
+    TINGKAT_KOASS = 0,
+    TINGKAT_RESIDEN,
+    TINGKAT_SPESIALIS,
+    TINGKAT_KONSULEN
+} TingkatDokter;
 
-// Struktur data untuk menyimpan entri jadwal (support multiple dokter per shift)
+// Preferensi waktu kerja dalam sebulan
+typedef enum {
+    WAKTU_AWAL_BULAN = 0,
+    WAKTU_AKHIR_BULAN,
+    WAKTU_CAMPUR
+} PreferensiWaktu;
+
+// Struktur data untuk menyimpan informasi dokter
+typedef struct {
+    char name[MAX_NAME_LEN];
+    char bidang[MAX_NAME_LEN];
+    TingkatDokter tingkat;
+    int max_shifts_per_week;
+    ShiftType preferred_shift;
+    PreferensiWaktu preferred_time;
+    int total_shifts_assigned;
+    int weekly_shifts[5]; // Shift yang dijadwalkan per minggu (asumsi: 5 minggu/bulan)
+} Doctor;
+
+// Struktur data untuk menyimpan satu shift dalam jadwal
 typedef struct {
     int day;
     int shift;
@@ -22,28 +46,15 @@ typedef struct {
     int num_doctors;
 } Schedule;
 
-// Deklarasi variabel global untuk jadwal
-extern Schedule schedule[TOTAL_SHIFTS];
+// Variabel global (akan di-definisikan di penjadwalan.c)
+extern Doctor doctors[MAX_DOCTORS];
+extern int num_doctors;
+extern Schedule schedule[DAYS_IN_MONTH * SHIFTS_PER_DAY];
 extern int schedule_count;
 
-// Fungsi utama penjadwalan
-void generate_schedule(Doctor* doctors, int num_doctors);
+// Deklarasi fungsi-fungsi utama
+int load_doctors_from_csv(const char* filename);
+void generate_schedule();
+void save_schedule();
 
-// Fungsi pendukung penjadwalan
-int is_doctor_available(Doctor* doctors, int id, int day, int shift);
-int calculate_score(Doctor* doctors, int id, int day, int shift);
-void assign_shift(Doctor* doctors, int day, int shift, int doctor_id);
-int is_doctor_already_assigned(int day, int shift, int doctor_id);
-
-// Fungsi utilitas
-int get_week_number(int day);
-int is_early_month(int day);
-
-// Fungsi parsing untuk membaca preferensi dari CSV
-ShiftType parse_shift(const char* s);
-PreferensiWaktu parse_waktu(const char* s);
-
-// Fungsi untuk menyimpan jadwal
-void save_schedule_to_csv(Doctor* doctors, int num_doctors);
-
-#endif // PENJADWALAN_H
+#endif
