@@ -180,7 +180,7 @@ void generate_schedule() {
 // Fungsi: Simpan jadwal ke file
 void save_schedule() {
     FILE* f = fopen(OUTPUT_FILE, "w");
-    if (!f) return; // Gagal buka file
+    if (!f) return;
 
     const char* hari[] = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};
     const char* shift_names[] = {"Pagi", "Siang", "Malam"};
@@ -191,11 +191,6 @@ void save_schedule() {
     for (int i = 0; i < schedule_count; i++) {
         int d = schedule[i].day;
         int s = schedule[i].shift;
-
-        if (schedule[i].num_doctors == 0) {
-            fprintf(f, "%d,%s,%s,TIDAK_ADA,,\n", d + 1, hari[d % 7], shift_names[s]);
-            continue;
-        }
 
         for (int j = 0; j < schedule[i].num_doctors; j++) {
             int id = schedule[i].doctor_ids[j];
