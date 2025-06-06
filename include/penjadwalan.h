@@ -6,6 +6,8 @@
 #define DAYS_IN_MONTH 30
 #define SHIFTS_PER_DAY 3
 #define MAX_DOCTORS_PER_SHIFT 2
+#define INPUT_FILE "data/daftar_dokter.csv"
+#define OUTPUT_FILE "data/jadwal_dokter.csv"
 
 // Enum untuk jenis shift, tingkat dokter, dan preferensi waktu
 typedef enum { SHIFT_PAGI = 0, SHIFT_SIANG, SHIFT_MALAM } ShiftType;

@@ -175,7 +175,7 @@ void generate_schedule() {
 
 // Write output to file
 void save_schedule() {
-    FILE* f = fopen("jadwal_dokter.csv", "w");
+    FILE* f = fopen(OUTPUT_FILE, "w");
     if (!f) return;
 
     const char* hari[] = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};

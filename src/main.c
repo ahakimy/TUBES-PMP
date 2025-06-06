@@ -2,7 +2,7 @@
 #include "penjadwalan.h"
 
 int main() {
-    if (!load_doctors_from_csv("daftar_dokter.csv")) {
+    if (!load_doctors_from_csv(INPUT_FILE)) {
         printf("Gagal membaca daftar dokter.\n");
         return 1;
     }
