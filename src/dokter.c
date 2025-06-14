@@ -422,37 +422,6 @@ void cari_dokter_menu() {
         }
     } while (pilihan != 0);
 }
-
-// --- SORTIR DOKTER ---
-void sortir_dokter() {
-    if (!head) {
-        printf("Belum ada data dokter untuk disortir.\n");
-        return;
-    }
-
-    int sortMode;
-    printf("Sortir berdasarkan:\n");
-    printf("1. Nama (A-Z)\n");
-    printf("2. Max shift per minggu\n");
-    printf("3. Tingkat\n");
-    printf("4. Preferensi Shift\n");
-    printf("5. Preferensi Waktu\n");
-    printf("Pilihan: ");
-    if (scanf("%d", &sortMode) != 1) {
-        printf("Input tidak valid. Harap masukkan angka.\n");
-        while (getchar() != '\n');
-        return;
-    }
-    getchar(); // Konsumsi newline
-
-    if (sortMode >= 1 && sortMode <= 5) {
-        sort_dokter_list(&head, sortMode);
-        printf("Dokter berhasil disortir dan disimpan.\n");
-    } else {
-        printf("Pilihan sortir tidak valid.\n");
-    }
-}
-
 // --- STATISTIK ---
 void statistik() {
     if (!head) {

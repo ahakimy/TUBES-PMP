@@ -8,8 +8,8 @@
 
 #define LEN 100
 #define MAX_DOKTER 100 // Define a constant for the maximum number of doctors
-#define INPUT_FILE_DOKTER "../data/daftar_dokter.csv" // Path relatif untuk input
-#define OUTPUT_FILE_DOKTER "../data/daftar_dokter.csv" // Path relatif untuk output
+#define INPUT_FILE_DOKTER "data/daftar_dokter.csv" // Path relatif untuk input
+#define OUTPUT_FILE_DOKTER "data/daftar_dokter.csv" // Path relatif untuk output
 
 // Struktur data Dokter menggunakan linked list
 typedef struct Dokter {
@@ -51,7 +51,6 @@ void cari_dokter_nama();
 void cari_dokter_bidang();
 void cari_dokter_tingkat();
 void cari_dokter_menu();
-void sortir_dokter();
 void statistik();
 void tampilkan_semua();
 void load_data_dari_csv(const char *nama_file);
