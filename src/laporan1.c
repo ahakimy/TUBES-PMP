@@ -14,7 +14,7 @@ char hari2[1000][100];
 char shift2[1000][100];
 char hari_next[100];
 char shift_next[100];
-char baris [100];
+char baris[100];
 int jumlah_dokter_pershift=2;
 
 void jalankanOpsi1(FILE* file) {
@@ -42,7 +42,7 @@ void jalankanOpsi1(FILE* file) {
         if (tanggal_user>0 &&tanggal_user<30){
             rewind(file);
             while (fgets(baris,sizeof(baris),file)){
-                sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,&hari,&shift,&nama_dokter,&bidang,&tingkat);
+                sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,hari,shift,nama_dokter,bidang,tingkat);
                 if (tanggal_calendar==tanggal_user){
                     strcpy(nama_dokter2[i],nama_dokter);
                     strcpy(tingkat2[i],tingkat);
@@ -76,7 +76,7 @@ void jalankanOpsi1(FILE* file) {
         else if (tanggal_user==30){
             rewind(file);
             while (fgets(baris,sizeof(baris),file)){
-                sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,&hari,&shift,&nama_dokter,&bidang,&tingkat);
+                sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,hari,shift,nama_dokter,bidang,tingkat);
                 if (tanggal_calendar==tanggal_user){
                     strcpy(nama_dokter2[i],nama_dokter);
                     strcpy(tingkat2[i],tingkat);
@@ -146,7 +146,7 @@ void jalankanOpsi2(FILE* file) {
     if (minggu_user>0&&minggu_user<6){
         rewind(file);
         while (fgets(baris,sizeof(baris),file)){
-            sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,&hari,&shift,&nama_dokter,&bidang,&tingkat);
+            sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,hari,shift,nama_dokter,bidang,tingkat);
             if (tanggal_calendar>= m &&tanggal_calendar<m+7){
                 strcpy(nama_dokter2[i],nama_dokter);
                 strcpy(tingkat2[i],tingkat);
@@ -205,7 +205,6 @@ void jalankanOpsi2(FILE* file) {
     shift_next[0] = '\0';
 }
 
-
 // =========================================================================
 // IMPLEMENTASI FUNGSI UNTUK OPSI 3
 // =========================================================================
@@ -214,7 +213,7 @@ void jalankanOpsi3(FILE* file) {
     int k=1;
     rewind(file);
     while (fgets(baris,sizeof(baris),file)){
-        sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,&hari,&shift,&nama_dokter,&bidang,&tingkat);
+        sscanf(baris,"%d,%[^,],%[^,],%[^,],%[^,],%[^\n]",&tanggal_calendar,hari,shift,nama_dokter,bidang,tingkat);
         strcpy(nama_dokter2[i],nama_dokter);
         strcpy(tingkat2[i],tingkat);
         strcpy(bidang2[i],bidang);
@@ -245,8 +244,3 @@ void jalankanOpsi3(FILE* file) {
     hari_next[0] = '\0';
     shift_next[0] = '\0';
 }
-
-            
-
-
-
