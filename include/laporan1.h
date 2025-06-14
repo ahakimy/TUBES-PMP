@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define nama_file "jadwal_dokter.csv"
+#define nama_file "data/jadwal_dokter.csv"
 
 
 // =========================================================================

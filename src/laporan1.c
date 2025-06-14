@@ -1,5 +1,5 @@
 #include "laporan1.h"
-#define nama_file "jadwal_dokter.csv"
+#define nama_file "data/jadwal_dokter.csv"
 
 int tanggal_calendar;
 char hari[100];
