@@ -18,7 +18,11 @@ void tambah_aktivitas(AksiType tipe, Dokter* data) {
     Aktivitas* a = malloc(sizeof(Aktivitas));
     if (!a) return;
     a->tipe = tipe;
-    a->dokterData = data; // Harus sudah salinan
+    a->dokterData = salin_dokter(data); // Pastikan salinan dibuat
+    if (!a->dokterData) {
+        free(a);
+        return;
+    }
     a->next = aktivitas_head;
     aktivitas_head = a;
 }
@@ -33,7 +37,6 @@ void hapus_aktivitas_terakhir() {
 
     // Undo sesuai tipe aktivitas
     if (a->tipe == AKSI_TAMBAH) {
-        // Undo tambah = hapus dokter yg baru ditambah
         Dokter *curr = head, *prev = NULL;
         while (curr) {
             if (strcmp(curr->nama, a->dokterData->nama) == 0) {
@@ -47,13 +50,15 @@ void hapus_aktivitas_terakhir() {
             curr = curr->next;
         }
     } else if (a->tipe == AKSI_HAPUS) {
-        // Undo hapus = tambah dokter kembali
         Dokter* d = salin_dokter(a->dokterData);
-        d->next = head;
-        head = d;
-        printf("Undo: Penghapusan dokter %s dibatalkan.\n", a->dokterData->nama);
+        if (d) {
+            d->next = head;
+            head = d;
+            printf("Undo: Penghapusan dokter %s dibatalkan.\n", a->dokterData->nama);
+        }
     }
 
+    // Hanya bebaskan salinan, bukan data asli di linked list
     free(a->dokterData);
     free(a);
 }
@@ -81,17 +86,30 @@ void tambah_dokter_manual() {
     Dokter* d = malloc(sizeof(Dokter));
     if (!d) return;
 
-    printf("Nama: "); fgets(d->nama, LEN, stdin); strtok(d->nama, "\n");
-    printf("Bidang: "); fgets(d->bidang, LEN, stdin); strtok(d->bidang, "\n");
-    printf("Tingkat: "); fgets(d->tingkat, LEN, stdin); strtok(d->tingkat, "\n");
+    printf("Nama: "); 
+    if (!fgets(d->nama, LEN, stdin) || strlen(d->nama) >= LEN) { free(d); return; }
+    d->nama[strcspn(d->nama, "\n")] = 0;
+
+    printf("Bidang: "); 
+    if (!fgets(d->bidang, LEN, stdin) || strlen(d->bidang) >= LEN) { free(d); return; }
+    d->bidang[strcspn(d->bidang, "\n")] = 0;
+
+    printf("Tingkat: "); 
+    if (!fgets(d->tingkat, LEN, stdin) || strlen(d->tingkat) >= LEN) { free(d); return; }
+    d->tingkat[strcspn(d->tingkat, "\n")] = 0;
+
     printf("Max shift/minggu: "); scanf("%d", &d->max_shift_per_minggu); getchar();
-    printf("Preferensi Shift (Pagi/Siang/Malam): "); fgets(d->preferensi_shift, LEN, stdin); strtok(d->preferensi_shift, "\n");
-    printf("Preferensi Waktu (Campur/Awal Bulan/Akhir Bulan): "); fgets(d->preferensi_waktu, LEN, stdin); strtok(d->preferensi_waktu, "\n");
+    printf("Preferensi Shift (Pagi/Siang/Malam): "); 
+    if (!fgets(d->preferensi_shift, LEN, stdin) || strlen(d->preferensi_shift) >= LEN) { free(d); return; }
+    d->preferensi_shift[strcspn(d->preferensi_shift, "\n")] = 0;
+
+    printf("Preferensi Waktu (Campur/Awal Bulan/Akhir Bulan): "); 
+    if (!fgets(d->preferensi_waktu, LEN, stdin) || strlen(d->preferensi_waktu) >= LEN) { free(d); return; }
+    d->preferensi_waktu[strcspn(d->preferensi_waktu, "\n")] = 0;
 
     d->next = head;
     head = d;
 
-    // Simpan aktivitas
     Dokter* copy = salin_dokter(d);
     tambah_aktivitas(AKSI_TAMBAH, copy);
 
@@ -102,7 +120,8 @@ void tambah_dokter_manual() {
 void hapus_dokter() {
     char target[LEN];
     printf("Masukkan nama dokter yang ingin dihapus: ");
-    fgets(target, LEN, stdin); strtok(target, "\n");
+    if (!fgets(target, LEN, stdin) || strlen(target) >= LEN) return;
+    target[strcspn(target, "\n")] = 0;
 
     Dokter *curr = head, *prev = NULL;
     while (curr) {
@@ -118,7 +137,6 @@ void hapus_dokter() {
             if (prev) prev->next = curr->next;
             else head = curr->next;
 
-            // Simpan data dokter yg dihapus untuk undo
             Dokter* copy = salin_dokter(curr);
             tambah_aktivitas(AKSI_HAPUS, copy);
 
@@ -144,30 +162,28 @@ int compare(const Dokter* a, const Dokter* b, int mode) {
     }
 }
 
-// Bubble sort linked list based on mode
+// Bubble sort linked list based on mode (perbaikan logika)
 void sort_dokter_list(Dokter** headRef, int mode) {
     if (!(*headRef) || !(*headRef)->next) return;
     int swapped;
-    Dokter **ptr;
+    Dokter *ptr1, *ptr2;
     do {
         swapped = 0;
-        ptr = headRef;
-        while ((*ptr) && (*ptr)->next) {
-            if (compare(*ptr, (*ptr)->next, mode) > 0) {
-                // Swap data isi struct saja (lebih mudah)
-                Dokter temp = **ptr;
-                **ptr = *(*ptr)->next;
-                *(*ptr)->next = temp;
-
-                // Fix next pointers after swap
-                Dokter* tempNext = (*ptr)->next;
-                (*ptr)->next = tempNext->next;
-                tempNext->next = (*ptr);
-                *ptr = tempNext;
-
+        ptr1 = NULL;
+        ptr2 = *headRef;
+        while (ptr2->next) {
+            if (compare(ptr2, ptr2->next, mode) > 0) {
+                Dokter* temp = ptr2->next;
+                ptr2->next = temp->next;
+                temp->next = ptr2;
+                if (ptr1) ptr1->next = temp;
+                else *headRef = temp;
+                ptr1 = temp;
                 swapped = 1;
+            } else {
+                ptr1 = ptr2;
+                ptr2 = ptr2->next;
             }
-            ptr = &(*ptr)->next;
         }
     } while (swapped);
 }
@@ -175,18 +191,16 @@ void sort_dokter_list(Dokter** headRef, int mode) {
 // Fungsi cek apakah string src mengandung keyword (case insensitive)
 int contains_keyword(const char* src, const char* keyword) {
     if (!src || !keyword) return 0;
+    size_t srcLen = strlen(src);
+    size_t keyLen = strlen(keyword);
+    if (srcLen >= LEN || keyLen >= LEN) return 0;
 
-    char srcLow[LEN];
-    char keyLow[LEN];
-    int i;
-
-    for (i=0; i<LEN-1 && src[i]; i++)
+    char srcLow[LEN] = {0};
+    char keyLow[LEN] = {0};
+    for (size_t i = 0; i < srcLen && i < LEN-1; i++)
         srcLow[i] = tolower(src[i]);
-    srcLow[i] = 0;
-
-    for (i=0; i<LEN-1 && keyword[i]; i++)
+    for (size_t i = 0; i < keyLen && i < LEN-1; i++)
         keyLow[i] = tolower(keyword[i]);
-    keyLow[i] = 0;
 
     return strstr(srcLow, keyLow) != NULL;
 }
@@ -216,7 +230,8 @@ void tampilkan_hasil(Dokter* hasil) {
 void cari_dokter_nama() {
     char keyword[LEN];
     printf("Masukkan nama dokter yang ingin dicari: ");
-    fgets(keyword, LEN, stdin); strtok(keyword, "\n");
+    if (!fgets(keyword, LEN, stdin) || strlen(keyword) >= LEN) return;
+    keyword[strcspn(keyword, "\n")] = 0;
 
     Dokter* hasil = NULL;
     Dokter* d = head;
@@ -224,15 +239,16 @@ void cari_dokter_nama() {
     while (d) {
         if (contains_keyword(d->nama, keyword)) {
             Dokter* nd = salin_dokter(d);
-            nd->next = hasil;
-            hasil = nd;
+            if (nd) {
+                nd->next = hasil;
+                hasil = nd;
+            }
         }
         d = d->next;
     }
 
     tampilkan_hasil(hasil);
 
-    // Bebaskan memori hasil
     while (hasil) {
         Dokter* temp = hasil;
         hasil = hasil->next;
@@ -244,7 +260,8 @@ void cari_dokter_nama() {
 void cari_dokter_bidang() {
     char keyword[LEN];
     printf("Masukkan bidang dokter yang ingin dicari: ");
-    fgets(keyword, LEN, stdin); strtok(keyword, "\n");
+    if (!fgets(keyword, LEN, stdin) || strlen(keyword) >= LEN) return;
+    keyword[strcspn(keyword, "\n")] = 0;
 
     Dokter* hasil = NULL;
     Dokter* d = head;
@@ -252,15 +269,16 @@ void cari_dokter_bidang() {
     while (d) {
         if (contains_keyword(d->bidang, keyword)) {
             Dokter* nd = salin_dokter(d);
-            nd->next = hasil;
-            hasil = nd;
+            if (nd) {
+                nd->next = hasil;
+                hasil = nd;
+            }
         }
         d = d->next;
     }
 
     tampilkan_hasil(hasil);
 
-    // Bebaskan memori hasil
     while (hasil) {
         Dokter* temp = hasil;
         hasil = hasil->next;
@@ -272,7 +290,8 @@ void cari_dokter_bidang() {
 void cari_dokter_tingkat() {
     char keyword[LEN];
     printf("Masukkan tingkat dokter yang ingin dicari: ");
-    fgets(keyword, LEN, stdin); strtok(keyword, "\n");
+    if (!fgets(keyword, LEN, stdin) || strlen(keyword) >= LEN) return;
+    keyword[strcspn(keyword, "\n")] = 0;
 
     Dokter* hasil = NULL;
     Dokter* d = head;
@@ -280,15 +299,16 @@ void cari_dokter_tingkat() {
     while (d) {
         if (contains_keyword(d->tingkat, keyword)) {
             Dokter* nd = salin_dokter(d);
-            nd->next = hasil;
-            hasil = nd;
+            if (nd) {
+                nd->next = hasil;
+                hasil = nd;
+            }
         }
         d = d->next;
     }
 
     tampilkan_hasil(hasil);
 
-    // Bebaskan memori hasil
     while (hasil) {
         Dokter* temp = hasil;
         hasil = hasil->next;
@@ -350,7 +370,6 @@ void statistik() {
     int maxShift = -1, minShift = 1000000;
     Dokter *maxDokter = NULL, *minDokter = NULL;
 
-    // Counters for shift and time preferences
     int countPagi = 0, countSiang = 0, countMalam = 0;
     int countCampur = 0, countAwalBulan = 0, countAkhirBulan = 0;
 
@@ -382,17 +401,14 @@ void statistik() {
             minDokter = d;
         }
 
-        // Count shift preferences
         if (strcmp(d->preferensi_shift, "Pagi") == 0) countPagi++;
         else if (strcmp(d->preferensi_shift, "Siang") == 0) countSiang++;
         else if (strcmp(d->preferensi_shift, "Malam") == 0) countMalam++;
 
-        // Count time preferences (case insensitive)
         if (strcasecmp(d->preferensi_waktu, "Campur") == 0) countCampur++;
         else if (strcasecmp(d->preferensi_waktu, "Awal Bulan") == 0) countAwalBulan++;
         else if (strcasecmp(d->preferensi_waktu, "Akhir Bulan") == 0) countAkhirBulan++;
 
-        // Count bidang
         int foundBidang = 0;
         for (int i = 0; i < bidangCount; i++) {
             if (strcmp(bidangArr[i].bidang, d->bidang) == 0) {
@@ -407,7 +423,6 @@ void statistik() {
             bidangCount++;
         }
 
-        // Count tingkat
         int foundTingkat = 0;
         for (int i = 0; i < tingkatCount; i++) {
             if (strcmp(tingkatArr[i].tingkat, d->tingkat) == 0) {
@@ -431,24 +446,22 @@ void statistik() {
     printf("Dokter dengan max shift tertinggi: %s (%d shift)\n", maxDokter->nama, maxShift);
     printf("Dokter dengan max shift terendah: %s (%d shift)\n", minDokter->nama, minShift);
 
-    // Display counts for shift preferences
     printf("\nJumlah dokter berdasarkan preferensi shift:\n");
     printf("- Pagi: %d\n", countPagi);
     printf("- Siang: %d\n", countSiang);
     printf("- Malam: %d\n", countMalam);
 
-    // Display counts for time preferences
     printf("\nJumlah dokter berdasarkan preferensi waktu:\n");
     printf("- Campur: %d\n", countCampur);
     printf("- Awal Bulan: %d\n", countAwalBulan);
     printf("- Akhir Bulan: %d\n", countAkhirBulan);
 
     printf("\nJumlah dokter per bidang:\n");
-    for (int i=0; i<bidangCount; i++)
+    for (int i = 0; i < bidangCount; i++)
         printf("- %s: %d\n", bidangArr[i].bidang, bidangArr[i].count);
 
     printf("\nJumlah dokter per tingkat:\n");
-    for (int i=0; i<tingkatCount; i++)
+    for (int i = 0; i < tingkatCount; i++)
         printf("- %s: %d\n", tingkatArr[i].tingkat, tingkatArr[i].count);
 }
 
@@ -490,19 +503,17 @@ void load_data_dari_csv(const char *nama_file) {
         Dokter* d = malloc(sizeof(Dokter));
         if (!d) continue;
 
-        char *token;
-
-        token = strtok(baris, ",");
+        char *token = strtok(baris, ",");
         if (!token) { free(d); continue; }
-        strcpy(d->nama, token);
+        strncpy(d->nama, token, LEN-1); d->nama[LEN-1] = 0;
 
         token = strtok(NULL, ",");
         if (!token) { free(d); continue; }
-        strcpy(d->bidang, token);
+        strncpy(d->bidang, token, LEN-1); d->bidang[LEN-1] = 0;
 
         token = strtok(NULL, ",");
         if (!token) { free(d); continue; }
-        strcpy(d->tingkat, token);
+        strncpy(d->tingkat, token, LEN-1); d->tingkat[LEN-1] = 0;
 
         token = strtok(NULL, ",");
         if (!token) { free(d); continue; }
@@ -510,17 +521,16 @@ void load_data_dari_csv(const char *nama_file) {
 
         token = strtok(NULL, ",");
         if (!token) { free(d); continue; }
-        strcpy(d->preferensi_shift, token);
+        strncpy(d->preferensi_shift, token, LEN-1); d->preferensi_shift[LEN-1] = 0;
 
-        token = strtok(NULL, ",");
+        token = strtok(NULL, ",\n");
         if (!token) { free(d); continue; }
-        // Remove newline character from preferensi_waktu, in case present
         char *newline = strchr(token, '\n');
         if (newline) *newline = 0;
-        strcpy(d->preferensi_waktu, token);
+        strncpy(d->preferensi_waktu, token, LEN-1); d->preferensi_waktu[LEN-1] = 0;
 
         d->next = head;
-        head = d; // Add the new doctor to the linked list
+        head = d;
         count++;
     }
 
@@ -528,14 +538,13 @@ void load_data_dari_csv(const char *nama_file) {
     printf("Berhasil memuat %d dokter dari %s\n", count, nama_file);
 }
 
-// 
+// --- SAVE DATA KE CSV ---
 void save_data_to_csv(const char *nama_file) {
     FILE *file = fopen(OUTPUT_FILE, "w");
     if (!file) {
-        printf("Gagal membuka file %s untuk menulis\n", nama_file);
+        printf("Gagal membuka file %s untuk menulis\n", OUTPUT_FILE);
         return;
     }
-    // Write header line first
     fprintf(file, "nama,bidang,tingkat,max_shift_per_minggu,preferensi_shift,preferensi_waktu\n");
 
     Dokter *d = head;
@@ -546,11 +555,29 @@ void save_data_to_csv(const char *nama_file) {
         d = d->next;
     }
     fclose(file);
-    printf("Data dokter berhasil disimpan ke %s\n", nama_file);
+    printf("Data dokter berhasil disimpan ke %s\n", OUTPUT_FILE);
+}
+
+// --- FREE MEMORY ---
+void free_memory() {
+    while (head) {
+        Dokter* temp = head;
+        head = head->next;
+        free(temp);
+    }
+    while (aktivitas_head) {
+        Aktivitas* temp = aktivitas_head;
+        aktivitas_head = aktivitas_head->next;
+        free(temp->dokterData);
+        free(temp);
+    }
 }
 
 // --- MAIN MENU ---
 void menu() {
+    // Load data awal saat program dimulai
+    load_data_dari_csv(OUTPUT_FILE);
+
     int pilihan;
     do {
         printf("\n=== MENU ===\n");
@@ -577,11 +604,11 @@ void menu() {
             case 8: tampilkan_log(); break;
             case 0: 
                 printf("Menyimpan data sebelum keluar...\n");
-                save_data_to_csv("daftar_dokter.csv"); // Simpan data sebelum keluar
+                save_data_to_csv(OUTPUT_FILE);
+                free_memory(); // Bebaskan memori sebelum keluar
                 printf("Keluar program...\n"); 
                 break;
             default: printf("Pilihan tidak valid.\n");
         }
     } while (pilihan != 0);
 }
-

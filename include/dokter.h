@@ -8,7 +8,7 @@
 
 #define LEN 100
 #define MAX_DOKTER 100 // Define a constant for the maximum number of doctors
-#define OUTPUT_FILE "data/daftar_dokter.csv" // Define output file path
+#define OUTPUT_FILE "../data/daftar_dokter.csv" // Path relatif ke executable di bin/
 
 typedef struct Dokter {
     char nama[LEN];
@@ -51,5 +51,6 @@ void tampilkan_semua();
 void load_data_dari_csv(const char *nama_file);
 void save_data_to_csv(const char *nama_file);
 void menu();
+void free_memory(); // Fungsi baru untuk membebaskan memori
 
 #endif // DOKTER_H
