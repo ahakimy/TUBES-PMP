@@ -141,7 +141,7 @@ void generate_schedule(void) {
 
 // Fungsi untuk menyimpan jadwal ke file CSV
 void save_schedule(void) {
-    FILE* f = fopen(OUTPUT_FILE, "w");
+    FILE* f = fopen(OUTPUT_FILE_PENJADWALAN, "w");
     if (!f) return;
 
     fprintf(f, "Tanggal,Hari,Shift,Nama_Dokter,Bidang,Tingkat\n");

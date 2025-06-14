@@ -9,8 +9,8 @@
 #define MAX_DOCTORS_PER_SHIFT 2  // Maksimum dokter per shift
 #define MAX_WEEKS 5              // Maksimum minggu dalam sebulan (sesuai coba13.c)
 #define LINE_BUFFER_SIZE 512     // Ukuran buffer untuk membaca baris CSV
-#define INPUT_FILE "data/daftar_dokter.csv"  // File input data dokter (dipertahankan)
-#define OUTPUT_FILE "data/jadwal_dokter.csv" // File output jadwal dokter (dipertahankan)
+#define INPUT_FILE_PENJADWALAN "data/daftar_dokter.csv"  // File input data dokter (dipertahankan)
+#define OUTPUT_FILE_PENJADWALAN "data/jadwal_dokter.csv" // File output jadwal dokter (dipertahankan)
 
 // Jenis shift, tingkat dokter, dan preferensi waktu
 typedef enum { SHIFT_PAGI = 0, SHIFT_SIANG, SHIFT_MALAM } ShiftType;
