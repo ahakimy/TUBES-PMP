@@ -1,10 +1,17 @@
 #include "dokter.h"
 #include <errno.h>    // Untuk strerror dan errno
-#include <sys/stat.h> // Untuk mkdir
 #include <string.h>   // Untuk strcspn, strncpy, strcmp, strstr
 #include <stdlib.h>   // Untuk malloc, free, atoi
 #include <stdio.h>    // Untuk FILE, fopen, fclose, printf, fgets, scanf, getchar
 #include <ctype.h>    // Untuk tolower, strcasecmp
+#ifdef _WIN32
+#include <direct.h>
+#define MKDIR(path) _mkdir(path)
+#else
+#include <sys/stat.h>
+#define MKDIR(path) mkdir(path, 0755)
+#endif
+
 
 Dokter* head = NULL;
 Aktivitas* aktivitas_head = NULL;
@@ -571,13 +578,7 @@ void load_data_dari_csv(const char *nama_file) {
         // Periksa apakah error adalah ENOENT (File or directory not found)
         if (errno == ENOENT) {
             // Coba buat direktori jika belum ada
-#ifdef _WIN32
-            // Untuk Windows
-            _mkdir(dir_path);
-#else
-            // Untuk Unix/Linux/macOS
-            mkdir(dir_path, 0755);
-#endif
+            MKDIR(dir_path);
             printf("Direktori 'data/' mungkin sudah atau baru saja dibuat. Mencoba membuat file...\n");
             file = fopen(nama_file, "w+"); // Coba buka/buat file untuk read/write
             if (file) {
@@ -673,11 +674,7 @@ void save_data_to_csv(const char *nama_file) {
         char dir_path[] = "../data/";
         if (errno == ENOENT) {
             // Coba buat direktori jika tidak ada
-#ifdef _WIN32
-            _mkdir(dir_path);
-#else
-            mkdir(dir_path, 0755);
-#endif
+            MKDIR(dir_path);
             file = fopen(nama_file, "w"); // Coba buka lagi setelah membuat direktori
             if (!file) {
                 printf("Gagal membuat file %s: %s\n", nama_file, strerror(errno));
