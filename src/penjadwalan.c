@@ -175,7 +175,7 @@ static int get_week_number(int day) {
 
 // Fungsi pembantu: Mengecek apakah hari berada di awal bulan (< 15)
 static int is_early_month(int day) {
-    return day < 15;
+    return day <= 15;
 }
 
 // Fungsi pembantu: Mengecek ketersediaan dokter (selalu tersedia, overwork ditangani di scoring)
