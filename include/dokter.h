@@ -1,47 +1,55 @@
 #ifndef DOKTER_H
 #define DOKTER_H
 
-// Definisi konstanta
-#define MAX_DOCTORS 50
-#define MAX_NAME_LEN 100
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
 
-// Forward declaration untuk enums yang akan digunakan di penjadwalan
-typedef enum {
-    SHIFT_PAGI = 0,
-    SHIFT_SIANG = 1, 
-    SHIFT_MALAM = 2
-} ShiftType;
+#define LEN 100
+#define MAX_DOKTER 100 // Define a constant for the maximum number of doctors
+#define OUTPUT_FILE "data/daftar_dokter.csv" // Define output file path
 
-typedef enum {
-    WAKTU_AWAL_BULAN = 0,
-    WAKTU_AKHIR_BULAN,
-    WAKTU_CAMPUR
-} PreferensiWaktu;
+typedef struct Dokter {
+    char nama[LEN];
+    char bidang[LEN];
+    char tingkat[LEN];
+    int max_shift_per_minggu;
+    char preferensi_shift[LEN];
+    char preferensi_waktu[LEN];
+    struct Dokter* next;
+} Dokter;
 
-// Enumerasi untuk tingkat dokter
-typedef enum {
-    TINGKAT_KOASS = 0,
-    TINGKAT_RESIDEN,
-    TINGKAT_SPESIALIS,
-    TINGKAT_KONSULEN
-} TingkatDokter;
+typedef enum { AKSI_TAMBAH, AKSI_HAPUS } AksiType;
 
-// Struktur data untuk menyimpan informasi dokter
-typedef struct {
-    char name[MAX_NAME_LEN];
-    char bidang[MAX_NAME_LEN];
-    TingkatDokter tingkat;
-    int max_shifts_per_week;
-    ShiftType preferred_shift;
-    PreferensiWaktu preferred_time;
-    int total_shifts_assigned;
-    int weekly_shifts[5]; // Jumlah shift per minggu (untuk 5 minggu dalam sebulan)
-    int shift_count[3]; // Jumlah shift pagi, siang, malam
-    int violation_count; // Jumlah pelanggaran preferensi
-} Doctor;
+typedef struct Aktivitas {
+    AksiType tipe;
+    Dokter* dokterData;  // Salinan data dokter yg dihapus/tambah utk undo
+    struct Aktivitas* next;
+} Aktivitas;
 
-// Fungsi-fungsi untuk mengelola data dokter
-int load_doctors_from_csv(const char* filename, Doctor* doctors, int max_doctors);
-TingkatDokter parse_tingkat(const char* s);
+extern Dokter* head;
+extern Aktivitas* aktivitas_head;
+
+Dokter* salin_dokter(Dokter* src);
+void tambah_aktivitas(AksiType tipe, Dokter* data);
+void hapus_aktivitas_terakhir();
+void tampilkan_log();
+void tambah_dokter_manual();
+void hapus_dokter();
+int compare(const Dokter* a, const Dokter* b, int mode);
+void sort_dokter_list(Dokter** headRef, int mode);
+int contains_keyword(const char* src, const char* keyword);
+void tampilkan_hasil(Dokter* hasil);
+void cari_dokter_nama();
+void cari_dokter_bidang();
+void cari_dokter_tingkat();
+void cari_dokter_menu();
+void sortir_dokter();
+void statistik();
+void tampilkan_semua();
+void load_data_dari_csv(const char *nama_file);
+void save_data_to_csv(const char *nama_file);
+void menu();
 
 #endif // DOKTER_H
