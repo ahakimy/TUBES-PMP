@@ -8,7 +8,8 @@
 
 #define LEN 100
 #define MAX_DOKTER 100 // Define a constant for the maximum number of doctors
-#define OUTPUT_FILE "../data/daftar_dokter.csv" // Path relatif ke executable di bin/
+#define INPUT_FILE_DOKTER "../data/daftar_dokter.csv" // Path relatif untuk input (sesuai penjadwalan.h)
+#define OUTPUT_FILE_DOKTER "../data/daftar_dokter.csv" // Path relatif untuk output
 
 typedef struct Dokter {
     char nama[LEN];

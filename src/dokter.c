@@ -1,4 +1,6 @@
 #include "dokter.h"
+#include <errno.h>
+#include <sys/stat.h> // Untuk mkdir di macOS
 
 Dokter* head = NULL;
 Aktivitas* aktivitas_head = NULL;
@@ -18,7 +20,7 @@ void tambah_aktivitas(AksiType tipe, Dokter* data) {
     Aktivitas* a = malloc(sizeof(Aktivitas));
     if (!a) return;
     a->tipe = tipe;
-    a->dokterData = salin_dokter(data); // Pastikan salinan dibuat
+    a->dokterData = salin_dokter(data);
     if (!a->dokterData) {
         free(a);
         return;
@@ -35,7 +37,6 @@ void hapus_aktivitas_terakhir() {
     Aktivitas* a = aktivitas_head;
     aktivitas_head = aktivitas_head->next;
 
-    // Undo sesuai tipe aktivitas
     if (a->tipe == AKSI_TAMBAH) {
         Dokter *curr = head, *prev = NULL;
         while (curr) {
@@ -58,7 +59,6 @@ void hapus_aktivitas_terakhir() {
         }
     }
 
-    // Hanya bebaskan salinan, bukan data asli di linked list
     free(a->dokterData);
     free(a);
 }
@@ -114,6 +114,7 @@ void tambah_dokter_manual() {
     tambah_aktivitas(AKSI_TAMBAH, copy);
 
     printf("Dokter %s berhasil ditambahkan.\n", d->nama);
+    save_data_to_csv(OUTPUT_FILE_DOKTER); // Simpan setelah penambahan
 }
 
 // --- HAPUS DOKTER ---
@@ -142,6 +143,7 @@ void hapus_dokter() {
 
             free(curr);
             printf("Dokter berhasil dihapus.\n");
+            save_data_to_csv(OUTPUT_FILE_DOKTER); // Simpan setelah penghapusan
             return;
         }
         prev = curr;
@@ -162,7 +164,7 @@ int compare(const Dokter* a, const Dokter* b, int mode) {
     }
 }
 
-// Bubble sort linked list based on mode (perbaikan logika)
+// Bubble sort linked list based on mode
 void sort_dokter_list(Dokter** headRef, int mode) {
     if (!(*headRef) || !(*headRef)->next) return;
     int swapped;
@@ -186,6 +188,7 @@ void sort_dokter_list(Dokter** headRef, int mode) {
             }
         }
     } while (swapped);
+    save_data_to_csv(OUTPUT_FILE_DOKTER); // Simpan setelah pengurutan
 }
 
 // Fungsi cek apakah string src mengandung keyword (case insensitive)
@@ -489,15 +492,43 @@ void tampilkan_semua() {
 void load_data_dari_csv(const char *nama_file) {
     FILE *file = fopen(nama_file, "r");
     if (!file) {
-        printf("Gagal membuka file %s\n", nama_file);
-        return;
+        printf("Gagal membuka file %s: %s\n", nama_file, strerror(errno));
+        // Coba buat direktori dan file jika tidak ada
+        char dir_path[] = "../data/";
+        if (errno == ENOENT) {
+            if (mkdir(dir_path, 0755) == 0) {
+                printf("Direktori 'data/' berhasil dibuat.\n");
+                file = fopen(nama_file, "w");
+                if (file) {
+                    fprintf(file, "nama,bidang,tingkat,max_shift_per_minggu,preferensi_shift,preferensi_waktu\n");
+                    fclose(file);
+                    file = fopen(nama_file, "r");
+                    if (!file) {
+                        printf("Gagal membuka file %s setelah pembuatan: %s\n", nama_file, strerror(errno));
+                        return;
+                    }
+                } else {
+                    printf("Gagal membuat file %s: %s\n", nama_file, strerror(errno));
+                    return;
+                }
+            } else {
+                printf("Gagal membuat direktori 'data/': %s\n", strerror(errno));
+                return;
+            }
+        } else {
+            return;
+        }
     }
 
     char baris[256];
     int count = 0;
 
     // Skip header
-    fgets(baris, sizeof(baris), file);
+    if (!fgets(baris, sizeof(baris), file)) {
+        printf("File %s kosong atau tidak valid.\n", nama_file);
+        fclose(file);
+        return;
+    }
 
     while (fgets(baris, sizeof(baris), file) && count < MAX_DOKTER) {
         Dokter* d = malloc(sizeof(Dokter));
@@ -540,11 +571,28 @@ void load_data_dari_csv(const char *nama_file) {
 
 // --- SAVE DATA KE CSV ---
 void save_data_to_csv(const char *nama_file) {
-    FILE *file = fopen(OUTPUT_FILE, "w");
+    FILE *file = fopen(nama_file, "w");
     if (!file) {
-        printf("Gagal membuka file %s untuk menulis\n", OUTPUT_FILE);
-        return;
+        printf("Gagal membuka file %s untuk menulis: %s\n", nama_file, strerror(errno));
+        // Coba buat direktori jika tidak ada
+        char dir_path[] = "../data/";
+        if (errno == ENOENT) {
+            if (mkdir(dir_path, 0755) == 0) {
+                printf("Direktori 'data/' berhasil dibuat.\n");
+                file = fopen(nama_file, "w");
+                if (!file) {
+                    printf("Gagal membuat file %s: %s\n", nama_file, strerror(errno));
+                    return;
+                }
+            } else {
+                printf("Gagal membuat direktori 'data/': %s\n", strerror(errno));
+                return;
+            }
+        } else {
+            return;
+        }
     }
+
     fprintf(file, "nama,bidang,tingkat,max_shift_per_minggu,preferensi_shift,preferensi_waktu\n");
 
     Dokter *d = head;
@@ -555,7 +603,7 @@ void save_data_to_csv(const char *nama_file) {
         d = d->next;
     }
     fclose(file);
-    printf("Data dokter berhasil disimpan ke %s\n", OUTPUT_FILE);
+    printf("Data dokter berhasil disimpan ke %s\n", nama_file);
 }
 
 // --- FREE MEMORY ---
@@ -571,44 +619,4 @@ void free_memory() {
         free(temp->dokterData);
         free(temp);
     }
-}
-
-// --- MAIN MENU ---
-void menu() {
-    // Load data awal saat program dimulai
-    load_data_dari_csv(OUTPUT_FILE);
-
-    int pilihan;
-    do {
-        printf("\n=== MENU ===\n");
-        printf("1. Tambah dokter\n");
-        printf("2. Hapus dokter\n");
-        printf("3. Cari dokter\n");
-        printf("4. Sortir dokter\n");
-        printf("5. Tampilkan semua dokter\n");
-        printf("6. Statistik\n");
-        printf("7. Undo aktivitas terakhir\n");
-        printf("8. Tampilkan log aktivitas\n");
-        printf("0. Keluar\n");
-        printf("Pilihan: ");
-        scanf("%d", &pilihan); getchar();
-
-        switch(pilihan) {
-            case 1: tambah_dokter_manual(); break;
-            case 2: hapus_dokter(); break;
-            case 3: cari_dokter_menu(); break;
-            case 4: sortir_dokter(); break;
-            case 5: tampilkan_semua(); break;
-            case 6: statistik(); break;
-            case 7: hapus_aktivitas_terakhir(); break;
-            case 8: tampilkan_log(); break;
-            case 0: 
-                printf("Menyimpan data sebelum keluar...\n");
-                save_data_to_csv(OUTPUT_FILE);
-                free_memory(); // Bebaskan memori sebelum keluar
-                printf("Keluar program...\n"); 
-                break;
-            default: printf("Pilihan tidak valid.\n");
-        }
-    } while (pilihan != 0);
 }
