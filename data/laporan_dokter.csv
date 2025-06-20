@@ -1,16 +1,19 @@
 Nama,Bidang,Tingkat,Total_Shift,Max_Per_Minggu,Pref_Shift,Pref_Waktu,Pelanggaran,Minggu_1,Minggu_2,Minggu_3,Minggu_4,Minggu_5,Shift_Pagi,Shift_Siang,Shift_Malam
-Andi Kurniawan,Bedah Umum,Koass,14,6,Pagi,Campur,0,2,3,4,4,1,14,0,0
-Budi Santoso,Bedah Onkologi,Residen,13,5,Siang,Akhir Bulan,5,2,2,4,4,1,0,12,1
-Chika Rahmawati,Bedah Saraf,Spesialis,9,4,Pagi,Awal Bulan,2,4,4,0,1,0,8,0,1
-Dodi Wirawan,Penyakit Dalam,Konsulen,10,2,Siang,Akhir Bulan,5,2,2,2,2,2,0,8,2
-Eka Prasetya,Gastroenterologi,Koass,1,6,Malam,Campur,1,0,1,0,0,0,0,1,0
-Fatma Dewi,Alergi dan Imunologi,Spesialis,10,4,Pagi,Awal Bulan,2,4,4,1,1,0,10,0,0
-Gilang Perdana,Endokrin,Residen,15,5,Siang,Akhir Bulan,6,3,2,4,4,2,0,13,2
-Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,10,2,Pagi,Akhir Bulan,4,2,2,2,2,2,6,0,4
-Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,17,4,Malam,Awal Bulan,8,4,4,4,4,1,0,0,17
-Joko Prabowo,Paru,Residen,16,5,Siang,Campur,2,5,5,3,3,0,0,14,2
-Kania Meilani,Anak,Koass,15,6,Pagi,Campur,0,2,2,5,5,1,15,0,0
-Lukman Hakim,THT,Spesialis,17,4,Malam,Awal Bulan,8,4,4,4,4,1,0,0,17
-Maya Sari,Kulit dan Kelamin,Residen,13,5,Siang,Akhir Bulan,8,3,2,3,4,1,0,9,4
-Niko Aditya,Mata,Konsulen,8,2,Pagi,Awal Bulan,2,2,2,2,2,0,7,0,1
-Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,12,4,Siang,Akhir Bulan,11,3,3,4,2,0,0,3,9
+Sarah,Gigi,Koass,6,8,Pagi,Campur,0,0,0,2,2,2,6,0,0
+Lutfi,Mata,Konsulen,0,5,Siang,Campur,0,0,0,0,0,0,0,0,0
+Abdul Hakim Yafi,Obgyn,Konsulen,8,4,Pagi,Akhir,8,2,2,2,2,0,4,0,4
+Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,11,4,Siang,Akhir,7,3,3,2,2,1,0,10,1
+Niko Aditya,Mata,Konsulen,14,2,Pagi,Awal,18,5,3,3,3,0,8,2,4
+Maya Sari,Kulit dan Kelamin,Residen,9,5,Siang,Akhir,5,3,0,3,3,0,0,7,2
+Lukman Hakim,THT,Spesialis,10,4,Malam,Awal,2,3,3,3,1,0,0,0,10
+Kania Meilani,Anak,Koass,13,6,Pagi,Campur,2,3,3,3,3,1,11,0,2
+Joko Prabowo,Paru,Residen,12,5,Siang,Campur,0,3,3,2,2,2,0,12,0
+Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,13,4,Malam,Awal,7,3,3,3,1,3,0,0,13
+Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,9,2,Pagi,Akhir,10,3,3,1,2,0,7,0,2
+Gilang Perdana,Endokrin,Residen,9,5,Siang,Akhir,6,0,3,3,3,0,0,6,3
+Fatma Dewi,Alergi dan Imunologi,Spesialis,12,4,Pagi,Awal,9,3,3,3,3,0,7,1,4
+Eka Prasetya,Gastroenterologi,Koass,6,6,Malam,Campur,0,0,2,0,3,1,0,0,6
+Dodi Wirawan,Penyakit Dalam,Konsulen,13,2,Siang,Akhir,13,5,2,3,3,0,0,12,1
+Chika Rahmawati,Bedah Saraf,Spesialis,12,4,Pagi,Awal,9,3,3,3,3,0,7,1,4
+Budi Santoso,Bedah Onkologi,Residen,10,5,Siang,Akhir,4,0,3,3,3,1,0,9,1
+Andi Kurniawan,Bedah Umum,Koass,13,6,Pagi,Campur,3,3,3,3,3,1,10,0,3

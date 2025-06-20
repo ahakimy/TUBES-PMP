@@ -1,181 +1,181 @@
 Tanggal,Hari,Shift,Nama_Dokter,Bidang,Tingkat
-1,Senin,Pagi,Andi Kurniawan,Bedah Umum,Koass
-1,Senin,Pagi,Kania Meilani,Anak,Koass
-1,Senin,Siang,Joko Prabowo,Paru,Residen
-1,Senin,Siang,Budi Santoso,Bedah Onkologi,Residen
-1,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
-1,Senin,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+1,Senin,Pagi,Niko Aditya,Mata,Konsulen
+1,Senin,Pagi,Niko Aditya,Mata,Konsulen
+1,Senin,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+1,Senin,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+1,Senin,Malam,Chika Rahmawati,Bedah Saraf,Spesialis
+1,Senin,Malam,Fatma Dewi,Alergi dan Imunologi,Spesialis
 2,Selasa,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
 2,Selasa,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-2,Selasa,Siang,Gilang Perdana,Endokrin,Residen
-2,Selasa,Siang,Maya Sari,Kulit dan Kelamin,Residen
-2,Selasa,Malam,Lukman Hakim,THT,Spesialis
-2,Selasa,Malam,Eka Prasetya,Gastroenterologi,Koass
-3,Rabu,Pagi,Andi Kurniawan,Bedah Umum,Koass
-3,Rabu,Pagi,Kania Meilani,Anak,Koass
+2,Selasa,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+2,Selasa,Siang,Joko Prabowo,Paru,Residen
+2,Selasa,Malam,Chika Rahmawati,Bedah Saraf,Spesialis
+2,Selasa,Malam,Fatma Dewi,Alergi dan Imunologi,Spesialis
+3,Rabu,Pagi,Niko Aditya,Mata,Konsulen
+3,Rabu,Pagi,Niko Aditya,Mata,Konsulen
+3,Rabu,Siang,Maya Sari,Kulit dan Kelamin,Residen
 3,Rabu,Siang,Joko Prabowo,Paru,Residen
-3,Rabu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-3,Rabu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-3,Rabu,Malam,Lukman Hakim,THT,Spesialis
-4,Kamis,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
-4,Kamis,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-4,Kamis,Siang,Budi Santoso,Bedah Onkologi,Residen
-4,Kamis,Siang,Gilang Perdana,Endokrin,Residen
-4,Kamis,Malam,Eka Prasetya,Gastroenterologi,Koass
+3,Rabu,Malam,Niko Aditya,Mata,Konsulen
+3,Rabu,Malam,Abdul Hakim Yafi,Obgyn,Konsulen
+4,Kamis,Pagi,Abdul Hakim Yafi,Obgyn,Konsulen
+4,Kamis,Pagi,Andi Kurniawan,Bedah Umum,Koass
+4,Kamis,Siang,Maya Sari,Kulit dan Kelamin,Residen
+4,Kamis,Siang,Joko Prabowo,Paru,Residen
 4,Kamis,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+4,Kamis,Malam,Kania Meilani,Anak,Koass
 5,Jumat,Pagi,Andi Kurniawan,Bedah Umum,Koass
 5,Jumat,Pagi,Kania Meilani,Anak,Koass
 5,Jumat,Siang,Maya Sari,Kulit dan Kelamin,Residen
-5,Jumat,Siang,Joko Prabowo,Paru,Residen
+5,Jumat,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
 5,Jumat,Malam,Lukman Hakim,THT,Spesialis
-5,Jumat,Malam,Eka Prasetya,Gastroenterologi,Koass
-6,Sabtu,Pagi,Niko Aditya,Mata,Konsulen
-6,Sabtu,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
+5,Jumat,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+6,Sabtu,Pagi,Andi Kurniawan,Bedah Umum,Koass
+6,Sabtu,Pagi,Kania Meilani,Anak,Koass
 6,Sabtu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-6,Sabtu,Siang,Budi Santoso,Bedah Onkologi,Residen
-6,Sabtu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+6,Sabtu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
 6,Sabtu,Malam,Lukman Hakim,THT,Spesialis
-7,Minggu,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-7,Minggu,Pagi,Andi Kurniawan,Bedah Umum,Koass
-7,Minggu,Siang,Gilang Perdana,Endokrin,Residen
-7,Minggu,Siang,Maya Sari,Kulit dan Kelamin,Residen
-7,Minggu,Malam,Eka Prasetya,Gastroenterologi,Koass
-7,Minggu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-8,Senin,Pagi,Kania Meilani,Anak,Koass
-8,Senin,Pagi,Andi Kurniawan,Bedah Umum,Koass
-8,Senin,Siang,Joko Prabowo,Paru,Residen
+6,Sabtu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+7,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+7,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+7,Minggu,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+7,Minggu,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+7,Minggu,Malam,Lukman Hakim,THT,Spesialis
+7,Minggu,Malam,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+8,Senin,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
+8,Senin,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
 8,Senin,Siang,Budi Santoso,Bedah Onkologi,Residen
-8,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
-8,Senin,Malam,Lukman Hakim,THT,Spesialis
+8,Senin,Siang,Gilang Perdana,Endokrin,Residen
+8,Senin,Malam,Chika Rahmawati,Bedah Saraf,Spesialis
+8,Senin,Malam,Fatma Dewi,Alergi dan Imunologi,Spesialis
 9,Selasa,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
 9,Selasa,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
+9,Selasa,Siang,Budi Santoso,Bedah Onkologi,Residen
 9,Selasa,Siang,Gilang Perdana,Endokrin,Residen
-9,Selasa,Siang,Maya Sari,Kulit dan Kelamin,Residen
-9,Selasa,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-9,Selasa,Malam,Eka Prasetya,Gastroenterologi,Koass
-10,Rabu,Pagi,Kania Meilani,Anak,Koass
-10,Rabu,Pagi,Andi Kurniawan,Bedah Umum,Koass
-10,Rabu,Siang,Joko Prabowo,Paru,Residen
-10,Rabu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-10,Rabu,Malam,Lukman Hakim,THT,Spesialis
-10,Rabu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-11,Kamis,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
-11,Kamis,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-11,Kamis,Siang,Budi Santoso,Bedah Onkologi,Residen
-11,Kamis,Siang,Gilang Perdana,Endokrin,Residen
-11,Kamis,Malam,Eka Prasetya,Gastroenterologi,Koass
-11,Kamis,Malam,Lukman Hakim,THT,Spesialis
-12,Jumat,Pagi,Kania Meilani,Anak,Koass
+9,Selasa,Malam,Niko Aditya,Mata,Konsulen
+9,Selasa,Malam,Niko Aditya,Mata,Konsulen
+10,Rabu,Pagi,Niko Aditya,Mata,Konsulen
+10,Rabu,Pagi,Abdul Hakim Yafi,Obgyn,Konsulen
+10,Rabu,Siang,Budi Santoso,Bedah Onkologi,Residen
+10,Rabu,Siang,Gilang Perdana,Endokrin,Residen
+10,Rabu,Malam,Eka Prasetya,Gastroenterologi,Koass
+10,Rabu,Malam,Eka Prasetya,Gastroenterologi,Koass
+11,Kamis,Pagi,Abdul Hakim Yafi,Obgyn,Konsulen
+11,Kamis,Pagi,Andi Kurniawan,Bedah Umum,Koass
+11,Kamis,Siang,Joko Prabowo,Paru,Residen
+11,Kamis,Siang,Joko Prabowo,Paru,Residen
+11,Kamis,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+11,Kamis,Malam,Kania Meilani,Anak,Koass
 12,Jumat,Pagi,Andi Kurniawan,Bedah Umum,Koass
-12,Jumat,Siang,Maya Sari,Kulit dan Kelamin,Residen
+12,Jumat,Pagi,Kania Meilani,Anak,Koass
 12,Jumat,Siang,Joko Prabowo,Paru,Residen
+12,Jumat,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+12,Jumat,Malam,Lukman Hakim,THT,Spesialis
 12,Jumat,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-12,Jumat,Malam,Eka Prasetya,Gastroenterologi,Koass
-13,Sabtu,Pagi,Niko Aditya,Mata,Konsulen
-13,Sabtu,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
+13,Sabtu,Pagi,Andi Kurniawan,Bedah Umum,Koass
+13,Sabtu,Pagi,Kania Meilani,Anak,Koass
 13,Sabtu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
 13,Sabtu,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
 13,Sabtu,Malam,Lukman Hakim,THT,Spesialis
 13,Sabtu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-14,Minggu,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-14,Minggu,Pagi,Kania Meilani,Anak,Koass
-14,Minggu,Siang,Budi Santoso,Bedah Onkologi,Residen
-14,Minggu,Siang,Gilang Perdana,Endokrin,Residen
-14,Minggu,Malam,Eka Prasetya,Gastroenterologi,Koass
-14,Minggu,Malam,Andi Kurniawan,Bedah Umum,Koass
-15,Senin,Pagi,Kania Meilani,Anak,Koass
-15,Senin,Pagi,Andi Kurniawan,Bedah Umum,Koass
-15,Senin,Siang,Joko Prabowo,Paru,Residen
-15,Senin,Siang,Maya Sari,Kulit dan Kelamin,Residen
-15,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
+14,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+14,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+14,Minggu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+14,Minggu,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+14,Minggu,Malam,Lukman Hakim,THT,Spesialis
+14,Minggu,Malam,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+15,Senin,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
+15,Senin,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
+15,Senin,Siang,Chika Rahmawati,Bedah Saraf,Spesialis
+15,Senin,Siang,Fatma Dewi,Alergi dan Imunologi,Spesialis
+15,Senin,Malam,Lukman Hakim,THT,Spesialis
 15,Senin,Malam,Lukman Hakim,THT,Spesialis
 16,Selasa,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
 16,Selasa,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-16,Selasa,Siang,Budi Santoso,Bedah Onkologi,Residen
-16,Selasa,Siang,Gilang Perdana,Endokrin,Residen
-16,Selasa,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-16,Selasa,Malam,Eka Prasetya,Gastroenterologi,Koass
-17,Rabu,Pagi,Kania Meilani,Anak,Koass
+16,Selasa,Siang,Niko Aditya,Mata,Konsulen
+16,Selasa,Siang,Niko Aditya,Mata,Konsulen
+16,Selasa,Malam,Lukman Hakim,THT,Spesialis
+16,Selasa,Malam,Niko Aditya,Mata,Konsulen
+17,Rabu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
 17,Rabu,Pagi,Andi Kurniawan,Bedah Umum,Koass
 17,Rabu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-17,Rabu,Siang,Maya Sari,Kulit dan Kelamin,Residen
-17,Rabu,Malam,Eka Prasetya,Gastroenterologi,Koass
-17,Rabu,Malam,Budi Santoso,Bedah Onkologi,Residen
-18,Kamis,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+17,Rabu,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+17,Rabu,Malam,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+17,Rabu,Malam,Dodi Wirawan,Penyakit Dalam,Konsulen
 18,Kamis,Pagi,Kania Meilani,Anak,Koass
-18,Kamis,Siang,Gilang Perdana,Endokrin,Residen
-18,Kamis,Siang,Joko Prabowo,Paru,Residen
-18,Kamis,Malam,Eka Prasetya,Gastroenterologi,Koass
-18,Kamis,Malam,Lukman Hakim,THT,Spesialis
+18,Kamis,Pagi,Andi Kurniawan,Bedah Umum,Koass
+18,Kamis,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+18,Kamis,Siang,Budi Santoso,Bedah Onkologi,Residen
+18,Kamis,Malam,Gilang Perdana,Endokrin,Residen
+18,Kamis,Malam,Maya Sari,Kulit dan Kelamin,Residen
+19,Jumat,Pagi,Kania Meilani,Anak,Koass
 19,Jumat,Pagi,Andi Kurniawan,Bedah Umum,Koass
-19,Jumat,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
-19,Jumat,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-19,Jumat,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
-19,Jumat,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+19,Jumat,Siang,Budi Santoso,Bedah Onkologi,Residen
+19,Jumat,Siang,Gilang Perdana,Endokrin,Residen
 19,Jumat,Malam,Maya Sari,Kulit dan Kelamin,Residen
+19,Jumat,Malam,Budi Santoso,Bedah Onkologi,Residen
 20,Sabtu,Pagi,Kania Meilani,Anak,Koass
-20,Sabtu,Pagi,Andi Kurniawan,Bedah Umum,Koass
-20,Sabtu,Siang,Budi Santoso,Bedah Onkologi,Residen
+20,Sabtu,Pagi,Abdul Hakim Yafi,Obgyn,Konsulen
 20,Sabtu,Siang,Gilang Perdana,Endokrin,Residen
-20,Sabtu,Malam,Eka Prasetya,Gastroenterologi,Koass
-20,Sabtu,Malam,Lukman Hakim,THT,Spesialis
-21,Minggu,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
-21,Minggu,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
+20,Sabtu,Siang,Maya Sari,Kulit dan Kelamin,Residen
+20,Sabtu,Malam,Abdul Hakim Yafi,Obgyn,Konsulen
+20,Sabtu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+21,Minggu,Pagi,Sarah,Gigi,Koass
+21,Minggu,Pagi,Sarah,Gigi,Koass
 21,Minggu,Siang,Joko Prabowo,Paru,Residen
-21,Minggu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+21,Minggu,Siang,Joko Prabowo,Paru,Residen
 21,Minggu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-21,Minggu,Malam,Dodi Wirawan,Penyakit Dalam,Konsulen
-22,Senin,Pagi,Kania Meilani,Anak,Koass
-22,Senin,Pagi,Andi Kurniawan,Bedah Umum,Koass
-22,Senin,Siang,Maya Sari,Kulit dan Kelamin,Residen
-22,Senin,Siang,Budi Santoso,Bedah Onkologi,Residen
+21,Minggu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+22,Senin,Pagi,Sarah,Gigi,Koass
+22,Senin,Pagi,Sarah,Gigi,Koass
+22,Senin,Siang,Joko Prabowo,Paru,Residen
+22,Senin,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
 22,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
-22,Senin,Malam,Gilang Perdana,Endokrin,Residen
-23,Selasa,Pagi,Kania Meilani,Anak,Koass
-23,Selasa,Pagi,Andi Kurniawan,Bedah Umum,Koass
-23,Selasa,Siang,Joko Prabowo,Paru,Residen
-23,Selasa,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+22,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
+23,Selasa,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
+23,Selasa,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
+23,Selasa,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
+23,Selasa,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
 23,Selasa,Malam,Eka Prasetya,Gastroenterologi,Koass
-23,Selasa,Malam,Lukman Hakim,THT,Spesialis
-24,Rabu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+23,Selasa,Malam,Chika Rahmawati,Bedah Saraf,Spesialis
+24,Rabu,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
 24,Rabu,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
-24,Rabu,Siang,Maya Sari,Kulit dan Kelamin,Residen
 24,Rabu,Siang,Budi Santoso,Bedah Onkologi,Residen
-24,Rabu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-24,Rabu,Malam,Eka Prasetya,Gastroenterologi,Koass
-25,Kamis,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
+24,Rabu,Siang,Gilang Perdana,Endokrin,Residen
+24,Rabu,Malam,Fatma Dewi,Alergi dan Imunologi,Spesialis
+24,Rabu,Malam,Andi Kurniawan,Bedah Umum,Koass
 25,Kamis,Pagi,Kania Meilani,Anak,Koass
-25,Kamis,Siang,Gilang Perdana,Endokrin,Residen
-25,Kamis,Siang,Joko Prabowo,Paru,Residen
-25,Kamis,Malam,Lukman Hakim,THT,Spesialis
-25,Kamis,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-26,Jumat,Pagi,Andi Kurniawan,Bedah Umum,Koass
-26,Jumat,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
-26,Jumat,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-26,Jumat,Siang,Dodi Wirawan,Penyakit Dalam,Konsulen
-26,Jumat,Malam,Eka Prasetya,Gastroenterologi,Koass
-26,Jumat,Malam,Maya Sari,Kulit dan Kelamin,Residen
-27,Sabtu,Pagi,Chika Rahmawati,Bedah Saraf,Spesialis
-27,Sabtu,Pagi,Fatma Dewi,Alergi dan Imunologi,Spesialis
-27,Sabtu,Siang,Budi Santoso,Bedah Onkologi,Residen
-27,Sabtu,Siang,Gilang Perdana,Endokrin,Residen
-27,Sabtu,Malam,Lukman Hakim,THT,Spesialis
-27,Sabtu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
-28,Minggu,Pagi,Niko Aditya,Mata,Konsulen
-28,Minggu,Pagi,Kania Meilani,Anak,Koass
-28,Minggu,Siang,Joko Prabowo,Paru,Residen
+25,Kamis,Pagi,Niko Aditya,Mata,Konsulen
+25,Kamis,Siang,Maya Sari,Kulit dan Kelamin,Residen
+25,Kamis,Siang,Budi Santoso,Bedah Onkologi,Residen
+25,Kamis,Malam,Andi Kurniawan,Bedah Umum,Koass
+25,Kamis,Malam,Gilang Perdana,Endokrin,Residen
+26,Jumat,Pagi,Kania Meilani,Anak,Koass
+26,Jumat,Pagi,Niko Aditya,Mata,Konsulen
+26,Jumat,Siang,Maya Sari,Kulit dan Kelamin,Residen
+26,Jumat,Siang,Budi Santoso,Bedah Onkologi,Residen
+26,Jumat,Malam,Andi Kurniawan,Bedah Umum,Koass
+26,Jumat,Malam,Gilang Perdana,Endokrin,Residen
+27,Sabtu,Pagi,Kania Meilani,Anak,Koass
+27,Sabtu,Pagi,Niko Aditya,Mata,Konsulen
+27,Sabtu,Siang,Maya Sari,Kulit dan Kelamin,Residen
+27,Sabtu,Siang,Joko Prabowo,Paru,Residen
+27,Sabtu,Malam,Abdul Hakim Yafi,Obgyn,Konsulen
+27,Sabtu,Malam,Abdul Hakim Yafi,Obgyn,Konsulen
+28,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
+28,Minggu,Pagi,Hilda Nuraini,Ginjal dan Hipertensi,Konsulen
 28,Minggu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
-28,Minggu,Malam,Eka Prasetya,Gastroenterologi,Koass
-28,Minggu,Malam,Dodi Wirawan,Penyakit Dalam,Konsulen
-29,Senin,Pagi,Andi Kurniawan,Bedah Umum,Koass
-29,Senin,Pagi,Kania Meilani,Anak,Koass
-29,Senin,Siang,Maya Sari,Kulit dan Kelamin,Residen
-29,Senin,Siang,Budi Santoso,Bedah Onkologi,Residen
-29,Senin,Malam,Eka Prasetya,Gastroenterologi,Koass
-29,Senin,Malam,Gilang Perdana,Endokrin,Residen
+28,Minggu,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+28,Minggu,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+28,Minggu,Malam,Lukman Hakim,THT,Spesialis
+29,Senin,Pagi,Sarah,Gigi,Koass
+29,Senin,Pagi,Sarah,Gigi,Koass
+29,Senin,Siang,Joko Prabowo,Paru,Residen
+29,Senin,Siang,Joko Prabowo,Paru,Residen
+29,Senin,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
+29,Senin,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
 30,Selasa,Pagi,Andi Kurniawan,Bedah Umum,Koass
 30,Selasa,Pagi,Kania Meilani,Anak,Koass
-30,Selasa,Siang,Joko Prabowo,Paru,Residen
 30,Selasa,Siang,Olivia Hapsari,Kandungan dan Ginekologi,Spesialis
+30,Selasa,Siang,Budi Santoso,Bedah Onkologi,Residen
 30,Selasa,Malam,Eka Prasetya,Gastroenterologi,Koass
-30,Selasa,Malam,Lukman Hakim,THT,Spesialis
+30,Selasa,Malam,Intan Lestari,Jantung dan Pembuluh Darah,Spesialis
