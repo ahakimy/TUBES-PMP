@@ -1,19 +1,26 @@
 nama,bidang,tingkat,max_shift_per_minggu,preferensi_shift,preferensi_waktu
-Sarah,Gigi,Koass,8,Pagi,Campur
-Lutfi,Mata,Konsulen,5,Siang,Campur
-Abdul Hakim Yafi,Obgyn,Konsulen,4,Pagi,Akhir Bulan
-Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,4,Siang,Akhir Bulan
-Niko Aditya,Mata,Konsulen,2,Pagi,Awal Bulan
-Maya Sari,Kulit dan Kelamin,Residen,5,Siang,Akhir Bulan
-Lukman Hakim,THT,Spesialis,4,Malam,Awal Bulan
-Kania Meilani,Anak,Koass,6,Pagi,Campur
-Joko Prabowo,Paru,Residen,5,Siang,Campur
-Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,4,Malam,Awal Bulan
-Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,2,Pagi,Akhir Bulan
-Gilang Perdana,Endokrin,Residen,5,Siang,Akhir Bulan
-Fatma Dewi,Alergi dan Imunologi,Spesialis,4,Pagi,Awal Bulan
-Eka Prasetya,Gastroenterologi,Koass,6,Malam,Campur
-Dodi Wirawan,Penyakit Dalam,Konsulen,2,Siang,Akhir Bulan
-Chika Rahmawati,Bedah Saraf,Spesialis,4,Pagi,Awal Bulan
-Budi Santoso,Bedah Onkologi,Residen,5,Siang,Akhir Bulan
+Fajar Nugraha,Bedah Plastik,Spesialis,4,Pagi,Akhir Bulan
+Dewi Anggraini,Onkologi Medis,Residen,4,Malam,Campur
+Laras Sari,Paru,Konsulen,3,Siang,Akhir Bulan
+Yusuf Hidayat,Kardiologi,Spesialis,5,Pagi,Awal Bulan
+Salsa Maharani,Neurologi,Residen,4,Malam,Akhir Bulan
+Bayu Herlambang,Anak,Konsulen,2,Pagi,Akhir Bulan
+Rani Permata,Gigi,Spesialis,3,Siang,Campur
 Andi Kurniawan,Bedah Umum,Koass,6,Pagi,Campur
+Budi Santoso,Bedah Onkologi,Residen,5,Siang,Akhir Bulan
+Chika Rahmawati,Bedah Saraf,Spesialis,4,Pagi,Awal Bulan
+Dodi Wirawan,Penyakit Dalam,Konsulen,2,Siang,Akhir Bulan
+Eka Prasetya,Gastroenterologi,Koass,6,Malam,Campur
+Fatma Dewi,Alergi dan Imunologi,Spesialis,4,Pagi,Awal Bulan
+Gilang Perdana,Endokrin,Residen,5,Siang,Akhir Bulan
+Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,2,Pagi,Akhir Bulan
+Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,4,Malam,Awal Bulan
+Joko Prabowo,Paru,Residen,5,Siang,Campur
+Kania Meilani,Anak,Koass,6,Pagi,Campur
+Lukman Hakim,THT,Spesialis,4,Malam,Awal Bulan
+Maya Sari,Kulit dan Kelamin,Residen,5,Siang,Akhir Bulan
+Niko Aditya,Mata,Konsulen,2,Pagi,Awal Bulan
+Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,4,Siang,Akhir Bulan
+Abdul Hakim Yafi,Obgyn,Konsulen,4,Pagi,Akhir Bulan
+Lutfi,Mata,Konsulen,5,Siang,Campur
+Sarah,Gigi,Koass,8,Pagi,Campur
