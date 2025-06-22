@@ -1,7 +1,7 @@
 Nama,Bidang,Tingkat,Total_Shift,Max_Per_Minggu,Pref_Shift,Pref_Waktu,Pelanggaran,Minggu_1,Minggu_2,Minggu_3,Minggu_4,Minggu_5,Shift_Pagi,Shift_Siang,Shift_Malam
-Sarah,Gigi,Koass,18,8,Pagi,Campur,1,4,4,4,4,2,17,0,1
+Rafif Farras,Bedah Anak,Konsulen,13,6,Pagi,Campur,0,3,3,3,3,1,13,0,0
 Lutfi,Mata,Konsulen,11,5,Siang,Campur,1,3,3,2,2,1,0,10,1
-Abdul Hakim Yafi,Obgyn,Konsulen,5,4,Pagi,Akhir,1,0,1,2,2,0,5,0,0
+Abdul Hakim Yafi,Obgyn,Konsulen,7,4,Pagi,Akhir,2,1,1,2,2,1,7,0,0
 Olivia Hapsari,Kandungan dan Ginekologi,Spesialis,6,4,Siang,Akhir,2,1,1,2,2,0,0,6,0
 Niko Aditya,Mata,Konsulen,0,2,Pagi,Awal,0,0,0,0,0,0,0,0,0
 Maya Sari,Kulit dan Kelamin,Residen,9,5,Siang,Akhir,4,2,2,2,2,1,0,9,0
@@ -9,12 +9,12 @@ Lukman Hakim,THT,Spesialis,10,4,Malam,Awal,3,3,3,2,2,0,0,0,10
 Kania Meilani,Anak,Koass,10,6,Pagi,Campur,0,2,2,3,2,1,10,0,0
 Joko Prabowo,Paru,Residen,9,5,Siang,Campur,0,3,2,2,2,0,0,9,0
 Intan Lestari,Jantung dan Pembuluh Darah,Spesialis,10,4,Malam,Awal,4,3,3,2,2,0,0,0,10
-Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,1,2,Pagi,Akhir,0,0,0,1,0,0,1,0,0
+Hilda Nuraini,Ginjal dan Hipertensi,Konsulen,2,2,Pagi,Akhir,0,0,0,1,1,0,2,0,0
 Gilang Perdana,Endokrin,Residen,9,5,Siang,Akhir,4,2,2,2,2,1,0,9,0
 Fatma Dewi,Alergi dan Imunologi,Spesialis,4,4,Pagi,Awal,0,2,2,0,0,0,4,0,0
-Eka Prasetya,Gastroenterologi,Koass,17,6,Malam,Campur,0,4,4,3,4,2,0,0,17
+Eka Prasetya,Gastroenterologi,Koass,18,6,Malam,Campur,0,4,4,4,4,2,0,0,18
 Dodi Wirawan,Penyakit Dalam,Konsulen,2,2,Siang,Akhir,0,0,0,1,1,0,0,2,0
-Chika Rahmawati,Bedah Saraf,Spesialis,3,4,Pagi,Awal,0,2,1,0,0,0,3,0,0
+Chika Rahmawati,Bedah Saraf,Spesialis,4,4,Pagi,Awal,0,2,2,0,0,0,4,0,0
 Budi Santoso,Bedah Onkologi,Residen,9,5,Siang,Akhir,4,2,2,2,2,1,0,9,0
 Andi Kurniawan,Bedah Umum,Koass,9,6,Pagi,Campur,0,2,2,2,2,1,9,0,0
 Rani Permata,Gigi,Spesialis,4,3,Siang,Campur,0,1,1,1,1,0,0,4,0
