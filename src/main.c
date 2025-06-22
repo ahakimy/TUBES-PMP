@@ -29,9 +29,8 @@ void menu_manajemen_dokter() {
         printf("2. Hapus Dokter\n");
         printf("3. Cari Dokter\n");
         printf("4. Tampilkan Semua Dokter\n");
-        printf("5. Tampilkan Statistik Dokter\n");
-        printf("6. Batalkan Aktivitas Terakhir (Undo)\n");
-        printf("7. Tampilkan Log Aktivitas\n");
+        printf("5. Batalkan Aktivitas Terakhir (Undo)\n");
+        printf("6. Tampilkan Log Aktivitas\n");
         printf("0. Kembali ke Menu Utama\n");
         printf("Pilihan: ");
         if (scanf("%d", &pilihan) != 1) {
@@ -46,9 +45,8 @@ void menu_manajemen_dokter() {
             case 2: hapus_dokter(); break;
             case 3: cari_dokter_menu(); break;
             case 4: tampilkan_semua(); break;
-            case 5: statistik(); break;
-            case 6: hapus_aktivitas_terakhir(); break;
-            case 7: tampilkan_log(); break;
+            case 5: hapus_aktivitas_terakhir(); break;
+            case 6: tampilkan_log(); break;
             case 0: printf("Kembali ke menu utama...\n"); break;
             default: printf("Pilihan tidak valid.\n");
         }
