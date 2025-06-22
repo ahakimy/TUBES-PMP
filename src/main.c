@@ -152,6 +152,13 @@ void menu_laporan_kinerja() {
 }
 
 
+#include "gui.h"
+
+int main(int argc, char **argv) {
+    return gui_main(argc, argv);
+}
+
+/*
 // Fungsi utama
 int main() {
     int pilihan;
@@ -194,3 +201,4 @@ int main() {
 
     return 0;
 }
+*/

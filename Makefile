@@ -1,47 +1,17 @@
-# Makefile untuk mengompilasi program penjadwalan dokter
-
-# Compiler yang digunakan
 CC = gcc
+CFLAGS = -Wall -Wextra -Iinclude `pkg-config --cflags gtk+-3.0`
+LDFLAGS = `pkg-config --libs gtk+-3.0`
 
-# Flag untuk kompilasi (mengaktifkan peringatan dan standar C99)
-CFLAGS = -Wall -std=c99 -Iinclude
+SRC = src/main.c src/gui.c \
+      src/dokter.c src/laporan.c src/laporan1.c src/penjadwalan.c
+OBJ = $(SRC:.c=.o)
+BIN = bin/penjadwalan
 
-# Direktori untuk file sumber, header, dan output
-SRC_DIR = src
-INCLUDE_DIR = include
-BIN_DIR = bin
+$(BIN): $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
-# Nama file output (executable)
-TARGET = $(BIN_DIR)/scheduler
+build/%.o: src/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-# Daftar file sumber di folder src/
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-
-# Daftar file objek yang dihasilkan dari file sumber
-OBJECTS = $(SOURCES:.c=.o)
-
-# Header file yang menjadi dependensi
-HEADERS = $(wildcard $(INCLUDE_DIR)/*.h)
-
-# Aturan default: membangun executable
-all: $(TARGET)
-
-# Aturan untuk membuat executable dari file objek
-$(TARGET): $(OBJECTS)
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(OBJECTS) -o $(TARGET)
-
-# Aturan untuk mengompilasi file sumber menjadi file objek
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Aturan untuk membersihkan file hasil kompilasi
 clean:
-	rm -f $(OBJECTS) $(TARGET)
-
-# Aturan untuk menjalankan program setelah dikompilasi
-run: $(TARGET)
-	./$(TARGET)
-
-# Aturan untuk menandai bahwa 'clean' dan 'run' bukan file
-.PHONY: clean run
+	rm -f build/*.o $(BIN)
