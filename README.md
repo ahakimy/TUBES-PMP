@@ -2,30 +2,34 @@
 
 Ini adalah proyek Tugas Besar Pemecahan Masalah dengan Pemrograman (PMP) untuk membuat sistem penjadwalan dokter otomatis di RS Semoga Sehat Selalu.
 
-## Deskripsi Proyek
+# Deskripsi Proyek
 
-Aplikasi ini bertujuan untuk mengotomatisasi proses penjadwalan jaga dokter di Rumah sakit selama periode 30 hari[cite: 1, 19]. Setiap hari dibagi menjadi tiga *shift*: pagi, siang, dan malam. Setiap *shift* harus diisi oleh minimal satu dokter[cite: 2, 20]. Sistem ini akan mempertimbangkan batasan seperti jumlah *shift* maksimal per minggu untuk setiap dokter, serta preferensi *shift* masing-masing dokter (misalnya, tidak ingin *shift* malam)[cite: 3, 21].
+Aplikasi ini bertujuan untuk mengotomatisasi proses penjadwalan jaga dokter di rumah sakit selama periode 30 hari. Setiap hari dibagi menjadi tiga *shift*: pagi, siang, dan malam. Setiap shift harus diisi oleh minimal satu dokter. Sistem ini mempertimbangkan batasan jumlah shift maksimal per minggu untuk setiap dokter serta preferensi shift (misalnya hanya ingin pagi, atau tidak ingin malam).
 
-Tujuan utama adalah untuk menghasilkan jadwal jaga yang efisien, memenuhi kebutuhan jumlah dokter di setiap *shift*, tidak melebihi beban kerja dokter, dan sebisa mungkin menghormati preferensi dokter[cite: 4, 22].
+Tujuan utama adalah menghasilkan jadwal yang:
+- Efisien dan adil.
+- Menghindari beban kerja berlebih.
+- Mengakomodasi preferensi pribadi dokter sebanyak mungkin.
 
-## Fitur Utama
+# Fitur Utama
 
-Aplikasi ini akan memiliki fitur-fitur berikut:
+1. **Manajemen Data Dokter**
+   - Tambah, hapus, dan tampilkan data dokter.
+   - Data mencakup nama, bidang, tingkat, maksimal shift per minggu, preferensi shift, dan waktu (awal/akhir bulan).
+   - Data disimpan dalam file `data/daftar_dokter.csv`.
 
-1.  **Pengelolaan Data Dokter**:
-    * Menambah, menghapus, dan menampilkan data dokter (nama, maksimal *shift* per minggu, dan preferensi *shift* seperti pagi/siang/malam).
-    * Membaca data dokter dari file `daftar_dokter.csv`[cite: 7, 25].
+2. **Penjadwalan Otomatis**
+   - Jadwal dibuat untuk 30 hari ke depan, dengan total 90 shift (3 shift/hari).
+   - Setiap shift diisi secara otomatis sesuai kebutuhan jumlah dokter, batasan beban kerja, dan preferensi yang ditentukan.
 
-2.  **Penentuan Jadwal Secara Otomatis**:
-    * Menyusun jadwal jaga otomatis untuk 30 hari (total 90 *shift*)[cite: 8, 26].
-    * Mengalokasikan *shift* dengan memperhatikan kebutuhan jumlah dokter, beban kerja, dan preferensi *shift* dokter[cite: 9, 27].
+3. **Laporan dan Visualisasi Jadwal**
+   - Laporan mencakup:
+     - Jadwal harian.
+     - Distribusi shift per dokter.
+     - Jumlah pelanggaran terhadap preferensi.
+   - Output dapat disimpan dalam file CSV (`data/jadwal_dokter.csv` dan `data/laporan_dokter.csv`).
 
-3.  **Menampilkan Informasi Jadwal**:
-    * Memberikan informasi jadwal jaga harian, mingguan, dan bulanan.
-    * Memberikan informasi jumlah *shift* masing-masing dokter.
-    * Memberikan informasi jumlah pelanggaran preferensi *shift* dokter (jika ada).
-    * Menyimpan jadwal yang dihasilkan ke file `jadwal.csv`.
-
-## Struktur Proyek
-
-Proyek ini diimplementasikan dalam Bahasa C dengan struktur modular (menggunakan beberapa file `.c` dan `.h`)[cite: 16].
+4. **Antarmuka Pengguna (GUI)**
+   - Menggunakan GTK+3 untuk tampilan grafis.
+   - Navigasi antar menu utama, manajemen data dokter, penjadwalan, dan laporan.
+   - Input dan output dilakukan melalui GUI sepenuhnya (tidak perlu terminal).
