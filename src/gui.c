@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Include header dari semua modul
+// Include headers dari semua modul
 #include "dokter.h"
 #include "penjadwalan.h"
 #include "laporan.h"
@@ -48,26 +48,31 @@ static void show_message_dialog(GtkWindow *parent, const char *title, const char
     gtk_widget_destroy(dialog);
 }
 
-// Function untuk membuat button dengan styling
+// Function untuk membuat button dengan styling modern
 static GtkWidget* create_styled_button(const char *label, GCallback callback, gpointer data) {
     GtkWidget *button = gtk_button_new_with_label(label);
-    gtk_widget_set_size_request(button, 250, 40);
+    gtk_widget_set_size_request(button, 220, 45);
     g_signal_connect(button, "clicked", callback, data);
     
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_data(provider,
         "button { "
-        "  background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); "
-        "  border: 1px solid #c0c0c0; "
-        "  border-radius: 6px; "
-        "  padding: 8px 16px; "
+        "  background: #3498db; " // Light blue
+        "  color: white; "
+        "  border: none; "
+        "  border-radius: 8px; "
+        "  padding: 10px 20px; "
+        "  font-size: 14px; "
         "  font-weight: bold; "
+        "  transition: background 0.3s ease, transform 0.2s; "
         "} "
         "button:hover { "
-        "  background: linear-gradient(to bottom, #e8e8e8, #d8d8d8); "
+        "  background: #2980b9; " // Darker blue on hover
+        "  transform: scale(1.05); "
         "} "
         "button:active { "
-        "  background: linear-gradient(to bottom, #d0d0d0, #c0c0c0); "
+        "  background: #1c6ea4; "
+        "  transform: scale(0.95); "
         "}",
         -1, NULL);
     
@@ -75,6 +80,7 @@ static GtkWidget* create_styled_button(const char *label, GCallback callback, gp
     gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
     g_object_unref(provider);
     
+    gtk_widget_set_tooltip_text(button, label); // Add tooltip
     return button;
 }
 
@@ -91,13 +97,13 @@ static void on_add_doctor_dialog_response(GtkDialog *dialog, gint response_id, g
 
         if (strlen(nama) == 0 || strlen(bidang) == 0 || strlen(tingkat) == 0 ||
             strlen(max_shift) == 0 || strlen(pref_shift) == 0 || strlen(pref_waktu) == 0) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Semua field harus diisi", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Semua kolom harus diisi!", GTK_MESSAGE_ERROR);
             return;
         }
 
         Dokter *d = malloc(sizeof(Dokter));
         if (!d) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Gagal alokasi memori", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Error", "Gagal alokasi memori!", GTK_MESSAGE_ERROR);
             gtk_widget_destroy(GTK_WIDGET(dialog));
             return;
         }
@@ -116,11 +122,11 @@ static void on_add_doctor_dialog_response(GtkDialog *dialog, gint response_id, g
         if (copy_for_undo) {
             tambah_aktivitas(AKSI_TAMBAH, copy_for_undo);
         } else {
-            show_message_dialog(GTK_WINDOW(dialog), "Peringatan", "Gagal membuat salinan untuk undo", GTK_MESSAGE_WARNING);
+            show_message_dialog(GTK_WINDOW(dialog), "Peringatan", "Gagal membuat salinan untuk undo!", GTK_MESSAGE_WARNING);
         }
 
         save_data_to_csv(DOKTER_CSV_PATH);
-        set_status_message("Dokter berhasil ditambahkan");
+        set_status_message("Dokter berhasil ditambahkan!");
     }
     gtk_widget_destroy(GTK_WIDGET(dialog));
     g_free(data);
@@ -128,30 +134,34 @@ static void on_add_doctor_dialog_response(GtkDialog *dialog, gint response_id, g
 
 // Function untuk menampilkan dialog tambah dokter
 static void show_add_doctor_dialog(GtkWidget *widget, gpointer data) {
-    (void)widget; (void)data; // Suppress unused parameter warnings
+    (void)widget; (void)data;
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Tambah Dokter Baru",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Simpan", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 400, 300);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 450, 400);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
     GtkWidget *grid = gtk_grid_new();
-    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
-    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
-    gtk_container_set_border_width(GTK_CONTAINER(grid), 20);
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 15);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 15);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 25);
 
-    GtkWidget *labels[] = {
-        gtk_label_new("Nama:"), gtk_label_new("Bidang:"), gtk_label_new("Tingkat:"),
-        gtk_label_new("Max Shift/Minggu:"), gtk_label_new("Preferensi Shift:"),
-        gtk_label_new("Preferensi Waktu:")
+    const char *labels[] = {
+        "Nama:", "Bidang:", "Tingkat:",
+        "Maks. Shift/Minggu:", "Preferensi Shift:", "Preferensi Waktu:"
+    };
+    const char *placeholders[] = {
+        "Masukkan nama dokter", "Masukkan spesialisasi", "Masukkan tingkat",
+        "Masukkan jumlah maksimum shift", "Masukkan shift pilihan", "Masukkan waktu pilihan"
     };
     GtkWidget *entries[6];
     for (int i = 0; i < 6; i++) {
         entries[i] = gtk_entry_new();
-        gtk_grid_attach(GTK_GRID(grid), labels[i], 0, i, 1, 1);
+        gtk_entry_set_placeholder_text(GTK_ENTRY(entries[i]), placeholders[i]);
+        gtk_grid_attach(GTK_GRID(grid), gtk_label_new(labels[i]), 0, i, 1, 1);
         gtk_grid_attach(GTK_GRID(grid), entries[i], 1, i, 1, 1);
     }
 
@@ -169,7 +179,7 @@ static void on_delete_doctor_dialog_response(GtkDialog *dialog, gint response_id
     if (response_id == GTK_RESPONSE_OK) {
         const char *nama = gtk_entry_get_text(GTK_ENTRY(data));
         if (strlen(nama) == 0) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Nama dokter harus diisi", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Nama dokter harus diisi!", GTK_MESSAGE_ERROR);
             return;
         }
 
@@ -183,12 +193,12 @@ static void on_delete_doctor_dialog_response(GtkDialog *dialog, gint response_id
                 if (copy_for_undo) {
                     tambah_aktivitas(AKSI_HAPUS, copy_for_undo);
                 } else {
-                    show_message_dialog(GTK_WINDOW(dialog), "Peringatan", "Gagal membuat salinan untuk undo", GTK_MESSAGE_WARNING);
+                    show_message_dialog(GTK_WINDOW(dialog), "Peringatan", "Gagal membuat salinan untuk undo!", GTK_MESSAGE_WARNING);
                 }
 
                 free(curr);
                 save_data_to_csv(DOKTER_CSV_PATH);
-                set_status_message("Dokter berhasil dihapus");
+                set_status_message("Dokter berhasil dihapus!");
                 gtk_widget_destroy(GTK_WIDGET(dialog));
                 g_free(data);
                 return;
@@ -196,7 +206,7 @@ static void on_delete_doctor_dialog_response(GtkDialog *dialog, gint response_id
             prev = curr;
             curr = curr->next;
         }
-        show_message_dialog(GTK_WINDOW(dialog), "Error", "Dokter tidak ditemukan", GTK_MESSAGE_ERROR);
+        show_message_dialog(GTK_WINDOW(dialog), "Error", "Dokter tidak ditemukan!", GTK_MESSAGE_ERROR);
     } else {
         gtk_widget_destroy(GTK_WIDGET(dialog));
         g_free(data);
@@ -209,17 +219,19 @@ static void show_delete_doctor_dialog(GtkWidget *widget, gpointer data) {
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Hapus Dokter",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Hapus", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 150);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
     GtkWidget *label = gtk_label_new("Masukkan nama dokter yang ingin dihapus:");
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Nama dokter");
+    gtk_widget_set_tooltip_text(entry, "Masukkan nama dokter yang akan dihapus");
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
 
@@ -237,7 +249,7 @@ static void on_search_doctor_dialog_response(GtkDialog *dialog, gint response_id
         int search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(widgets[1]));
 
         if (strlen(keyword) == 0) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Keyword harus diisi", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Kata kunci harus diisi!", GTK_MESSAGE_ERROR);
             return;
         }
 
@@ -247,15 +259,9 @@ static void on_search_doctor_dialog_response(GtkDialog *dialog, gint response_id
         while (d) {
             int match = 0;
             switch (search_type) {
-                case 0: // Nama
-                    match = contains_keyword(d->nama, keyword);
-                    break;
-                case 1: // Bidang
-                    match = contains_keyword(d->bidang, keyword);
-                    break;
-                case 2: // Tingkat
-                    match = contains_keyword(d->tingkat, keyword);
-                    break;
+                case 0: match = contains_keyword(d->nama, keyword); break;
+                case 1: match = contains_keyword(d->bidang, keyword); break;
+                case 2: match = contains_keyword(d->tingkat, keyword); break;
             }
             if (match) {
                 Dokter *nd = salin_dokter(d);
@@ -285,23 +291,26 @@ static void show_search_doctor_dialog(GtkWidget *widget, gpointer data) {
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Cari Dokter",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Cari", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 200);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 250);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
-    GtkWidget *label = gtk_label_new("Masukkan keyword pencarian:");
+    GtkWidget *label = gtk_label_new("Masukkan kata kunci pencarian:");
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Kata kunci");
+    gtk_widget_set_tooltip_text(entry, "Masukkan kata kunci untuk pencarian");
     GtkWidget *combo_label = gtk_label_new("Pilih kriteria pencarian:");
     GtkWidget *combo = gtk_combo_box_text_new();
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "Nama");
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "Bidang");
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), "Tingkat");
     gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
+    gtk_widget_set_tooltip_text(combo, "Pilih kriteria untuk mencari dokter");
 
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
@@ -322,11 +331,11 @@ static void show_search_doctor_dialog(GtkWidget *widget, gpointer data) {
 static void show_search_results(Dokter *hasil) {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Hasil Pencarian Dokter");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 400);
+    gtk_window_set_default_size(GTK_WINDOW(window), 700, 450);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 
     if (!hasil) {
         GtkWidget *label = gtk_label_new("Tidak ada dokter yang cocok dengan kriteria pencarian.");
@@ -352,10 +361,11 @@ static void show_search_results(Dokter *hasil) {
         GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
         g_object_unref(store);
 
-        const char *titles[] = {"Nama", "Bidang", "Tingkat", "Max Shift/Minggu", "Pref. Shift", "Pref. Waktu"};
+        const char *titles[] = {"Nama", "Bidang", "Tingkat", "Maks. Shift/Minggu", "Pref. Shift", "Pref. Waktu"};
         for (int i = 0; i < 6; i++) {
             GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
             GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(titles[i], renderer, "text", i, NULL);
+            gtk_tree_view_column_set_resizable(column, TRUE);
             gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
         }
 
@@ -370,34 +380,34 @@ static void show_search_results(Dokter *hasil) {
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show_all(window);
-    set_status_message("Pencarian dokter selesai");
+    set_status_message("Pencarian dokter selesai.");
 }
 
 // Function untuk menampilkan semua dokter dalam tree view
 static void show_all_doctors(GtkWidget *widget, gpointer data) {
     (void)widget; (void)data;
     show_search_results(head);
-    set_status_message("Menampilkan semua dokter");
+    set_status_message("Menampilkan semua dokter.");
 }
 
 // Function untuk menampilkan dialog undo
 static void show_undo_dialog(GtkWidget *widget, gpointer data) {
     (void)widget; (void)data;
     if (!aktivitas_head) {
-        show_message_dialog(GTK_WINDOW(main_window), "Info", "Tidak ada aktivitas untuk dibatalkan", GTK_MESSAGE_INFO);
+        show_message_dialog(GTK_WINDOW(main_window), "Info", "Tidak ada aktivitas untuk dibatalkan!", GTK_MESSAGE_INFO);
         return;
     }
 
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Batalkan Aktivitas Terakhir",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Batalkan", GTK_RESPONSE_OK,
+                                                    "_Kembali", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 150);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
     char msg[256];
@@ -413,7 +423,7 @@ static void show_undo_dialog(GtkWidget *widget, gpointer data) {
     g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), NULL);
 
     gtk_widget_show_all(dialog);
-    set_status_message("Menampilkan dialog undo");
+    set_status_message("Menampilkan dialog undo.");
 }
 
 // Function untuk menampilkan log aktivitas
@@ -421,11 +431,11 @@ static void show_activity_log(GtkWidget *widget, gpointer data) {
     (void)widget; (void)data;
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Log Aktivitas");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+    gtk_window_set_default_size(GTK_WINDOW(window), 450, 350);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 
     GtkWidget *text_view = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view), FALSE);
@@ -461,7 +471,7 @@ static void show_activity_log(GtkWidget *widget, gpointer data) {
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show_all(window);
-    set_status_message("Menampilkan log aktivitas");
+    set_status_message("Menampilkan log aktivitas.");
 }
 
 // Function untuk menampilkan jadwal dalam tree view
@@ -472,18 +482,18 @@ static void show_schedule_tree_view(FILE *file, int filter_value, int filter_val
     else if (mode == 2) snprintf(title, sizeof(title), "Jadwal Mingguan - Minggu %d", filter_value);
     else snprintf(title, sizeof(title), "Jadwal Bulanan");
     gtk_window_set_title(GTK_WINDOW(window), title);
-    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    gtk_window_set_default_size(GTK_WINDOW(window), 850, 600);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 
     GtkListStore *store = gtk_list_store_new(6, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                              G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
     GtkTreeIter iter;
 
     char line[1024];
-    fgets(line, sizeof(line), file); // Skip header
+    fgets(line, sizeof(line), file);
     int start_day = mode == 2 ? (filter_value - 1) * 7 + 1 : 1;
     int end_day = mode == 2 ? start_day + 6 : 30;
     int count = 0;
@@ -520,6 +530,7 @@ static void show_schedule_tree_view(FILE *file, int filter_value, int filter_val
         for (int i = 0; i < 6; i++) {
             GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
             GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(titles[i], renderer, "text", i, NULL);
+            gtk_tree_view_column_set_resizable(column, TRUE);
             gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
         }
 
@@ -534,7 +545,7 @@ static void show_schedule_tree_view(FILE *file, int filter_value, int filter_val
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show_all(window);
-    set_status_message(mode == 1 ? "Menampilkan jadwal harian" : mode == 2 ? "Menampilkan jadwal mingguan" : "Menampilkan jadwal bulanan");
+    set_status_message(mode == 1 ? "Menampilkan jadwal harian." : mode == 2 ? "Menampilkan jadwal mingguan." : "Menampilkan jadwal bulanan.");
 }
 
 // Callback untuk dialog jadwal harian
@@ -543,18 +554,18 @@ static void on_daily_schedule_dialog_response(GtkDialog *dialog, gint response_i
         const char *input = gtk_entry_get_text(GTK_ENTRY(data));
         int tanggal = atoi(input);
         if (tanggal < 1 || tanggal > 30) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Tanggal tidak valid (harus 1-30)", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Tanggal tidak valid (harus 1-30)!", GTK_MESSAGE_ERROR);
             return;
         }
 
         FILE *file = fopen(JADWAL_CSV_PATH, "r");
         if (!file) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Tidak dapat membuka file jadwal", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Error", "Tidak dapat membuka file jadwal!", GTK_MESSAGE_ERROR);
             gtk_widget_destroy(GTK_WIDGET(dialog));
             return;
         }
 
-        show_schedule_tree_view(file, tanggal, 0, 1); // Mode 1: Harian
+        show_schedule_tree_view(file, tanggal, 0, 1);
         fclose(file);
     }
     gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -566,17 +577,19 @@ static void show_daily_schedule_dialog(GtkWidget *widget, gpointer data) {
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Pilih Tanggal",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Tampilkan", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 150);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
     GtkWidget *label = gtk_label_new("Masukkan tanggal (1-30):");
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Tanggal");
+    gtk_widget_set_tooltip_text(entry, "Masukkan tanggal antara 1-30");
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
 
@@ -592,18 +605,18 @@ static void on_weekly_schedule_dialog_response(GtkDialog *dialog, gint response_
         const char *input = gtk_entry_get_text(GTK_ENTRY(data));
         int minggu = atoi(input);
         if (minggu < 1 || minggu > 5) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Minggu tidak valid (harus 1-5)", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Minggu tidak valid (harus 1-5)!", GTK_MESSAGE_ERROR);
             return;
         }
 
         FILE *file = fopen(JADWAL_CSV_PATH, "r");
         if (!file) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Tidak dapat membuka file jadwal", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Error", "Tidak dapat membuka file jadwal!", GTK_MESSAGE_ERROR);
             gtk_widget_destroy(GTK_WIDGET(dialog));
             return;
         }
 
-        show_schedule_tree_view(file, minggu, 0, 2); // Mode 2: Mingguan
+        show_schedule_tree_view(file, minggu, 0, 2);
         fclose(file);
     }
     gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -615,17 +628,19 @@ static void show_weekly_schedule_dialog(GtkWidget *widget, gpointer data) {
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Pilih Minggu",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Tampilkan", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 150);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
     GtkWidget *label = gtk_label_new("Masukkan minggu (1-5):");
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Nomor minggu");
+    gtk_widget_set_tooltip_text(entry, "Masukkan minggu antara 1-5");
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
 
@@ -640,11 +655,11 @@ static void show_monthly_schedule(GtkWidget *widget, gpointer data) {
     (void)widget; (void)data;
     FILE *file = fopen(JADWAL_CSV_PATH, "r");
     if (!file) {
-        show_message_dialog(GTK_WINDOW(main_window), "Error", "Tidak dapat membuka file jadwal", GTK_MESSAGE_ERROR);
+        show_message_dialog(GTK_WINDOW(main_window), "Error", "Tidak dapat membuka file jadwal!", GTK_MESSAGE_ERROR);
         return;
     }
 
-    show_schedule_tree_view(file, 0, 0, 3); // Mode 3: Bulanan
+    show_schedule_tree_view(file, 0, 0, 3);
     fclose(file);
 }
 
@@ -653,19 +668,19 @@ static void on_shift_totals_dialog_response(GtkDialog *dialog, gint response_id,
     if (response_id == GTK_RESPONSE_OK) {
         const char *nama_dokter = gtk_entry_get_text(GTK_ENTRY(data));
         if (strlen(nama_dokter) == 0) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Nama dokter harus diisi", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Nama dokter harus diisi!", GTK_MESSAGE_ERROR);
             return;
         }
 
         FILE *fp = fopen(LAPORAN_CSV_PATH, "r");
         if (!fp) {
-            show_message_dialog(GTK_WINDOW(dialog), "Error", "Gagal membuka file laporan", GTK_MESSAGE_ERROR);
+            show_message_dialog(GTK_WINDOW(dialog), "Error", "Gagal membuka file laporan!", GTK_MESSAGE_ERROR);
             gtk_widget_destroy(GTK_WIDGET(dialog));
             return;
         }
 
         char line[1024];
-        fgets(line, sizeof(line), fp); // Skip header
+        fgets(line, sizeof(line), fp);
         int found = 0;
         char msg[256];
 
@@ -687,7 +702,7 @@ static void on_shift_totals_dialog_response(GtkDialog *dialog, gint response_id,
         }
 
         fclose(fp);
-        set_status_message("Menampilkan total shift dokter");
+        set_status_message("Menampilkan total shift dokter.");
     }
     gtk_widget_destroy(GTK_WIDGET(dialog));
 }
@@ -698,17 +713,19 @@ static void show_shift_totals_dialog(GtkWidget *widget, gpointer data) {
     GtkWidget *dialog = gtk_dialog_new_with_buttons("Lihat Total Shift",
                                                     GTK_WINDOW(main_window),
                                                     GTK_DIALOG_MODAL,
-                                                    "_OK", GTK_RESPONSE_OK,
-                                                    "_Cancel", GTK_RESPONSE_CANCEL,
+                                                    "_Tampilkan", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
                                                     NULL);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 150);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
 
     GtkWidget *label = gtk_label_new("Masukkan nama dokter:");
     GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Nama dokter");
+    gtk_widget_set_tooltip_text(entry, "Masukkan nama dokter untuk melihat total shift");
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
 
@@ -725,17 +742,17 @@ static void show_violations_view(GtkWidget *widget, gpointer data) {
     load_doctor_data(DOKTER_CSV_PATH);
 
     if (total_shift_entries == 0 || total_doctor_entries == 0) {
-        show_message_dialog(GTK_WINDOW(main_window), "Error", "Tidak ada data untuk menampilkan pelanggaran", GTK_MESSAGE_ERROR);
+        show_message_dialog(GTK_WINDOW(main_window), "Error", "Tidak ada data untuk menampilkan pelanggaran!", GTK_MESSAGE_ERROR);
         return;
     }
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Pelanggaran Jadwal");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 400);
+    gtk_window_set_default_size(GTK_WINDOW(window), 650, 450);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
 
     GtkWidget *text_view = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view), FALSE);
@@ -796,7 +813,7 @@ static void show_violations_view(GtkWidget *widget, gpointer data) {
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show_all(window);
-    set_status_message("Menampilkan pelanggaran jadwal");
+    set_status_message("Menampilkan pelanggaran jadwal.");
 }
 
 // Callback functions untuk menu utama
@@ -871,8 +888,8 @@ static void on_generate_schedule_clicked(GtkWidget *widget, gpointer data) {
     
     if (!load_doctors_from_csv(DOKTER_CSV_PATH)) {
         show_message_dialog(GTK_WINDOW(main_window), "Error", 
-                           "Gagal memuat data dokter atau file kosong", GTK_MESSAGE_ERROR);
-        set_status_message("Gagal memuat data dokter");
+                           "Gagal memuat data dokter atau file kosong!", GTK_MESSAGE_ERROR);
+        set_status_message("Gagal memuat data dokter!");
         return;
     }
     
@@ -883,8 +900,8 @@ static void on_generate_schedule_clicked(GtkWidget *widget, gpointer data) {
     save_schedule();
     
     show_message_dialog(GTK_WINDOW(main_window), "Sukses", 
-                       "Penjadwalan berhasil dibuat dan disimpan", GTK_MESSAGE_INFO);
-    set_status_message("Penjadwalan selesai");
+                       "Penjadwalan berhasil dibuat dan disimpan!", GTK_MESSAGE_INFO);
+    set_status_message("Penjadwalan selesai!");
 }
 
 // Schedule view callbacks
@@ -913,8 +930,8 @@ static void on_generate_report_clicked(GtkWidget *widget, gpointer data) {
     
     if (total_shift_entries == 0 || total_doctor_entries == 0) {
         show_message_dialog(GTK_WINDOW(main_window), "Error", 
-                           "Tidak ada data yang cukup untuk membuat laporan", GTK_MESSAGE_ERROR);
-        set_status_message("Gagal membuat laporan - data tidak cukup");
+                           "Tidak ada data yang cukup untuk membuat laporan!", GTK_MESSAGE_ERROR);
+        set_status_message("Gagal membuat laporan - data tidak cukup!");
         return;
     }
     
@@ -925,8 +942,8 @@ static void on_generate_report_clicked(GtkWidget *widget, gpointer data) {
     tulis_laporan(LAPORAN_CSV_PATH);
     
     show_message_dialog(GTK_WINDOW(main_window), "Sukses", 
-                       "Laporan kinerja dokter berhasil dibuat", GTK_MESSAGE_INFO);
-    set_status_message("Laporan berhasil dibuat");
+                       "Laporan kinerja dokter berhasil dibuat!", GTK_MESSAGE_INFO);
+    set_status_message("Laporan berhasil dibuat!");
 }
 
 static void on_view_shift_totals_clicked(GtkWidget *widget, gpointer data) {
@@ -947,22 +964,23 @@ static void show_main_menu(void) {
     }
     g_list_free(children);
     
-    GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
-    gtk_widget_set_margin_top(main_box, 40);
-    gtk_widget_set_margin_bottom(main_box, 40);
-    gtk_widget_set_margin_start(main_box, 40);
-    gtk_widget_set_margin_end(main_box, 40);
+    GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 25);
+    gtk_widget_set_margin_top(main_box, 50);
+    gtk_widget_set_margin_bottom(main_box, 50);
+    gtk_widget_set_margin_start(main_box, 50);
+    gtk_widget_set_margin_end(main_box, 50);
     
-    GtkWidget *title = gtk_label_new("Sistem Manajemen Jadwal Dokter Rumah Sakit Sehat Selalu");
+    GtkWidget *title = gtk_label_new("Sistem Manajemen Jadwal Dokter\nRumah Sakit Sehat Selalu");
     gtk_widget_set_name(title, "title-label");
     
     GtkCssProvider *title_provider = gtk_css_provider_new();
     gtk_css_provider_load_from_data(title_provider,
         "#title-label { "
-        "  font-size: 24px; "
+        "  font-size: 26px; "
         "  font-weight: bold; "
-        "  color: #2c3e50; "
-        "  margin-bottom: 20px; "
+        "  color: #2c3e50; " // Dark blue
+        "  margin-bottom: 25px; "
+        "  text-align: center; "
         "}",
         -1, NULL);
     
@@ -972,66 +990,26 @@ static void show_main_menu(void) {
     
     gtk_box_pack_start(GTK_BOX(main_box), title, FALSE, FALSE, 0);
     
-    GtkWidget *btn_doctor = create_styled_button("1. Manajemen Dokter", G_CALLBACK(on_doctor_management_clicked), NULL);
-    GtkWidget *btn_schedule = create_styled_button("2. Penjadwalan Otomatis", G_CALLBACK(on_scheduling_clicked), NULL);
-    GtkWidget *btn_view = create_styled_button("3. Lihat Jadwal Dokter", G_CALLBACK(on_schedule_view_clicked), NULL);
-    GtkWidget *btn_report = create_styled_button("4. Laporan Kinerja Dokter", G_CALLBACK(on_performance_report_clicked), NULL);
-    GtkWidget *btn_exit = create_styled_button("0. Keluar Program", G_CALLBACK(on_exit_clicked), NULL);
+    GtkWidget *btn_doctor = create_styled_button("Manajemen Dokter", G_CALLBACK(on_doctor_management_clicked), NULL);
+    GtkWidget *btn_schedule = create_styled_button("Penjadwalan Otomatis", G_CALLBACK(on_scheduling_clicked), NULL);
+    GtkWidget *btn_view = create_styled_button("Lihat Jadwal Dokter", G_CALLBACK(on_schedule_view_clicked), NULL);
+    GtkWidget *btn_report = create_styled_button("Laporan Kinerja Dokter", G_CALLBACK(on_performance_report_clicked), NULL);
+    GtkWidget *btn_exit = create_styled_button("Keluar Program", G_CALLBACK(on_exit_clicked), NULL);
     
-    gtk_box_pack_start(GTK_BOX(main_box), btn_doctor, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(main_box), btn_schedule, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(main_box), btn_view, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(main_box), btn_report, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(main_box), btn_exit, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(main_box), btn_doctor, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(main_box), btn_schedule, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(main_box), btn_view, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(main_box), btn_report, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(main_box), btn_exit, FALSE, FALSE, 8);
     
     gtk_container_add(GTK_CONTAINER(main_stack), main_box);
     gtk_widget_show_all(main_stack);
     
-    set_status_message("Selamat datang di Sistem Manajemen Jadwal Dokter");
+    set_status_message("Selamat datang di Sistem Manajemen Jadwal Dokter!");
 }
 
 // Function untuk menampilkan doctor management menu
 static void show_doctor_management(void) {
-    GList *children = gtk_container_get_children(GTK_CONTAINER(main_stack));
-    for (GList *iter = children; iter != NULL; iter = g_list_next(iter)) {
-        gtk_widget_destroy(GTK_WIDGET(iter->data));
-    }
-    g_list_free(children);
-    
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
-    gtk_widget_set_margin_top(box, 30);
-    gtk_widget_set_margin_bottom(box, 30);
-    gtk_widget_set_margin_start(box, 30);
-    gtk_widget_set_margin_end(box, 30);
-    
-    GtkWidget *title = gtk_label_new("MENU MANAJEMEN DOKTER");
-    gtk_widget_set_name(title, "subtitle");
-    gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
-    
-    GtkWidget *btn_add = create_styled_button("1. Tambah Dokter Baru", G_CALLBACK(on_add_doctor_clicked), NULL);
-    GtkWidget *btn_delete = create_styled_button("2. Hapus Dokter", G_CALLBACK(on_delete_doctor_clicked), NULL);
-    GtkWidget *btn_search = create_styled_button("3. Cari Dokter", G_CALLBACK(on_search_doctor_clicked), NULL);
-    GtkWidget *btn_show_all = create_styled_button("4. Tampilkan Semua Dokter", G_CALLBACK(on_show_all_doctors_clicked), NULL);
-    GtkWidget *btn_undo = create_styled_button("5. Batalkan Aktivitas Terakhir", G_CALLBACK(on_undo_last_action_clicked), NULL);
-    GtkWidget *btn_log = create_styled_button("6. Tampilkan Log Aktivitas", G_CALLBACK(on_show_activity_log_clicked), NULL);
-    GtkWidget *btn_back = create_styled_button("0. Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
-    
-    gtk_box_pack_start(GTK_BOX(box), btn_add, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_delete, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_search, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_show_all, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_undo, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_log, FALSE, FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 3);
-    
-    gtk_container_add(GTK_CONTAINER(main_stack), box);
-    gtk_widget_show_all(main_stack);
-    
-    set_status_message("Menu Manajemen Dokter");
-}
-
-// Function untuk menampilkan scheduling menu
-static void show_scheduling(void) {
     GList *children = gtk_container_get_children(GTK_CONTAINER(main_stack));
     for (GList *iter = children; iter != NULL; iter = g_list_next(iter)) {
         gtk_widget_destroy(GTK_WIDGET(iter->data));
@@ -1044,24 +1022,65 @@ static void show_scheduling(void) {
     gtk_widget_set_margin_start(box, 40);
     gtk_widget_set_margin_end(box, 40);
     
-    GtkWidget *title = gtk_label_new("MENU PENJADWALAN OTOMATIS");
+    GtkWidget *title = gtk_label_new("Manajemen Dokter");
     gtk_widget_set_name(title, "subtitle");
+    
     gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
     
-    GtkWidget *info = gtk_label_new("Klik tombol di bawah untuk menghasilkan jadwal otomatis berdasarkan data dokter");
-    gtk_label_set_line_wrap(GTK_LABEL(info), TRUE);
-    gtk_box_pack_start(GTK_BOX(box), info, FALSE, FALSE, 10);
-    
-    GtkWidget *btn_generate = create_styled_button("Generate Jadwal Bulanan", G_CALLBACK(on_generate_schedule_clicked), NULL);
+    GtkWidget *btn_add = create_styled_button("Tambah Dokter Baru", G_CALLBACK(on_add_doctor_clicked), NULL);
+    GtkWidget *btn_delete = create_styled_button("Hapus Dokter", G_CALLBACK(on_delete_doctor_clicked), NULL);
+    GtkWidget *btn_search = create_styled_button("Cari Dokter", G_CALLBACK(on_search_doctor_clicked), NULL);
+    GtkWidget *btn_show_all = create_styled_button("Tampilkan Semua Dokter", G_CALLBACK(on_show_all_doctors_clicked), NULL);
+    GtkWidget *btn_undo = create_styled_button("Batalkan Aktivitas Terakhir", G_CALLBACK(on_undo_last_action_clicked), NULL);
+    GtkWidget *btn_log = create_styled_button("Tampilkan Log Aktivitas", G_CALLBACK(on_show_activity_log_clicked), NULL);
     GtkWidget *btn_back = create_styled_button("Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
     
-    gtk_box_pack_start(GTK_BOX(box), btn_generate, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(box), btn_add, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_delete, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_search, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_show_all, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_undo, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_log, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 8);
     
     gtk_container_add(GTK_CONTAINER(main_stack), box);
     gtk_widget_show_all(main_stack);
     
-    set_status_message("Menu Penjadwalan Otomatis");
+    set_status_message("Menu Manajemen Dokter.");
+}
+
+// Function untuk menampilkan scheduling menu
+static void show_scheduling(void) {
+    GList *children = gtk_container_get_children(GTK_CONTAINER(main_stack));
+    for (GList *iter = children; iter != NULL; iter = g_list_next(iter)) {
+        gtk_widget_destroy(GTK_WIDGET(iter->data));
+    }
+    g_list_free(children);
+    
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 25);
+    gtk_widget_set_margin_top(box, 50);
+    gtk_widget_set_margin_bottom(box, 50);
+    gtk_widget_set_margin_start(box, 50);
+    gtk_widget_set_margin_end(box, 50);
+    
+    GtkWidget *title = gtk_label_new("Penjadwalan Otomatis");
+    gtk_widget_set_name(title, "subtitle");
+    gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
+    
+    GtkWidget *info = gtk_label_new("Klik tombol di bawah untuk menghasilkan jadwal otomatis berdasarkan data dokter.");
+    gtk_label_set_line_wrap(GTK_LABEL(info), TRUE);
+    gtk_box_pack_start(GTK_BOX(box), info, FALSE, FALSE, 15);
+    
+    GtkWidget *btn_generate = create_styled_button("Generate Jadwal Bulanan", G_CALLBACK(on_generate_schedule_clicked), NULL);
+    GtkWidget *btn_back = create_styled_button("Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
+    
+    gtk_box_pack_start(GTK_BOX(box), btn_generate, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 8);
+    
+    gtk_container_add(GTK_CONTAINER(main_stack), box);
+    gtk_widget_show_all(main_stack);
+    
+    set_status_message("Menu Penjadwalan Otomatis.");
 }
 
 // Function untuk menampilkan schedule view menu
@@ -1072,30 +1091,30 @@ static void show_schedule_view(void) {
     }
     g_list_free(children);
     
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
-    gtk_widget_set_margin_top(box, 30);
-    gtk_widget_set_margin_bottom(box, 30);
-    gtk_widget_set_margin_start(box, 30);
-    gtk_widget_set_margin_end(box, 30);
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_margin_top(box, 40);
+    gtk_widget_set_margin_bottom(box, 40);
+    gtk_widget_set_margin_start(box, 40);
+    gtk_widget_set_margin_end(box, 40);
     
-    GtkWidget *title = gtk_label_new("MENU LIHAT JADWAL");
+    GtkWidget *title = gtk_label_new("Lihat Jadwal");
     gtk_widget_set_name(title, "subtitle");
     gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
     
-    GtkWidget *btn_daily = create_styled_button("1. Tampilkan Jadwal Harian", G_CALLBACK(on_daily_schedule_clicked), NULL);
-    GtkWidget *btn_weekly = create_styled_button("2. Tampilkan Jadwal Mingguan", G_CALLBACK(on_weekly_schedule_clicked), NULL);
-    GtkWidget *btn_monthly = create_styled_button("3. Tampilkan Jadwal Bulanan", G_CALLBACK(on_monthly_schedule_clicked), NULL);
-    GtkWidget *btn_back = create_styled_button("0. Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
+    GtkWidget *btn_daily = create_styled_button("Tampilkan Jadwal Harian", G_CALLBACK(on_daily_schedule_clicked), NULL);
+    GtkWidget *btn_weekly = create_styled_button("Tampilkan Jadwal Mingguan", G_CALLBACK(on_weekly_schedule_clicked), NULL);
+    GtkWidget *btn_monthly = create_styled_button("Tampilkan Jadwal Bulanan", G_CALLBACK(on_monthly_schedule_clicked), NULL);
+    GtkWidget *btn_back = create_styled_button("Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
     
-    gtk_box_pack_start(GTK_BOX(box), btn_daily, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_weekly, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_monthly, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(box), btn_daily, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_weekly, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_monthly, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 8);
     
     gtk_container_add(GTK_CONTAINER(main_stack), box);
     gtk_widget_show_all(main_stack);
     
-    set_status_message("Menu Lihat Jadwal");
+    set_status_message("Menu Lihat Jadwal.");
 }
 
 // Function untuk menampilkan performance report menu
@@ -1106,30 +1125,30 @@ static void show_performance_report(void) {
     }
     g_list_free(children);
     
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
-    gtk_widget_set_margin_top(box, 30);
-    gtk_widget_set_margin_bottom(box, 30);
-    gtk_widget_set_margin_start(box, 30);
-    gtk_widget_set_margin_end(box, 30);
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_margin_top(box, 40);
+    gtk_widget_set_margin_bottom(box, 40);
+    gtk_widget_set_margin_start(box, 40);
+    gtk_widget_set_margin_end(box, 40);
     
-    GtkWidget *title = gtk_label_new("MENU LAPORAN KINERJA DOKTER");
+    GtkWidget *title = gtk_label_new("Laporan Kinerja Dokter");
     gtk_widget_set_name(title, "subtitle");
     gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
     
     GtkWidget *btn_generate = create_styled_button("Generate Laporan Kinerja", G_CALLBACK(on_generate_report_clicked), NULL);
-    GtkWidget *btn_shifts = create_styled_button("1. Lihat Total Shift Dokter", G_CALLBACK(on_view_shift_totals_clicked), NULL);
-    GtkWidget *btn_violations = create_styled_button("2. Lihat Pelanggaran Jadwal", G_CALLBACK(on_view_violations_clicked), NULL);
-    GtkWidget *btn_back = create_styled_button("0. Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
+    GtkWidget *btn_shifts = create_styled_button("Lihat Total Shift Dokter", G_CALLBACK(on_view_shift_totals_clicked), NULL);
+    GtkWidget *btn_violations = create_styled_button("Lihat Pelanggaran Jadwal", G_CALLBACK(on_view_violations_clicked), NULL);
+    GtkWidget *btn_back = create_styled_button("Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
     
-    gtk_box_pack_start(GTK_BOX(box), btn_generate, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_shifts, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_violations, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(box), btn_generate, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_shifts, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_violations, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 8);
     
     gtk_container_add(GTK_CONTAINER(main_stack), box);
     gtk_widget_show_all(main_stack);
     
-    set_status_message("Menu Laporan Kinerja Dokter");
+    set_status_message("Menu Laporan Kinerja Dokter.");
 }
 
 // Window close callback
@@ -1146,8 +1165,8 @@ int gui_main(int argc, char *argv[]) {
     load_data_dari_csv(DOKTER_CSV_PATH);
     
     main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(main_window), "Sistem Manajemen Jadwal Dokter");
-    gtk_window_set_default_size(GTK_WINDOW(main_window), 600, 500);
+    gtk_window_set_title(GTK_WINDOW(main_window), "Rumah Sakit Sehat Selalu");
+    gtk_window_set_default_size(GTK_WINDOW(main_window), 650, 550);
     gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
     
@@ -1160,10 +1179,10 @@ int gui_main(int argc, char *argv[]) {
     gtk_box_pack_start(GTK_BOX(main_container), main_stack, TRUE, TRUE, 0);
     
     status_label = gtk_label_new("Memuat aplikasi...");
-    gtk_widget_set_margin_start(status_label, 10);
-    gtk_widget_set_margin_end(status_label, 10);
-    gtk_widget_set_margin_top(status_label, 5);
-    gtk_widget_set_margin_bottom(status_label, 5);
+    gtk_widget_set_margin_start(status_label, 15);
+    gtk_widget_set_margin_end(status_label, 15);
+    gtk_widget_set_margin_top(status_label, 10);
+    gtk_widget_set_margin_bottom(status_label, 10);
     gtk_widget_set_halign(status_label, GTK_ALIGN_START);
     
     GtkWidget *separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
@@ -1173,13 +1192,13 @@ int gui_main(int argc, char *argv[]) {
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_data(provider,
         "window { "
-        "  background-color: #f5f5f5; "
+        "  background-color: #f8f9fa; " // Light gray
         "} "
         "#subtitle { "
-        "  font-size: 18px; "
+        "  font-size: 20px; "
         "  font-weight: bold; "
-        "  color: #34495e; "
-        "  margin-bottom: 15px; "
+        "  color: #2c3e50; "
+        "  margin-bottom: 20px; "
         "}",
         -1, NULL);
     
