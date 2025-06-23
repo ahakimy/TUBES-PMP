@@ -953,7 +953,7 @@ static void show_main_menu(void) {
     gtk_widget_set_margin_start(main_box, 40);
     gtk_widget_set_margin_end(main_box, 40);
     
-    GtkWidget *title = gtk_label_new("Sistem Manajemen Jadwal Dokter");
+    GtkWidget *title = gtk_label_new("Sistem Manajemen Jadwal Dokter Rumah Sakit Sehat Selalu");
     gtk_widget_set_name(title, "title-label");
     
     GtkCssProvider *title_provider = gtk_css_provider_new();
