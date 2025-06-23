@@ -27,7 +27,6 @@ Tujuan utama adalah menghasilkan jadwal yang:
      - Jadwal harian.
      - Distribusi shift per dokter.
      - Jumlah pelanggaran terhadap preferensi.
-   - Output dapat disimpan dalam file CSV (`data/jadwal_dokter.csv` dan `data/laporan_dokter.csv`).
 
 4. **Antarmuka Pengguna (GUI)**
    - Menggunakan GTK+3 untuk tampilan grafis.
