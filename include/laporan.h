@@ -1,9 +1,9 @@
 #ifndef UTILS_LAPORAN_H
 #define UTILS_LAPORAN_H
 
-#define MAX_ENTRIES 1000 //Max 
-#define MAX_NAME 100     //Maksimal panjang nama
-#define MAX_LINE 1024    //maksimal panjang line
+#define MAX_ENTRIES 1000
+#define MAX_NAME 100
+#define MAX_LINE 1024
 #define INPUT_FILE_JADWAL "data/jadwal_dokter.csv"
 #define INPUT_FILE_DOKTER "data/daftar_dokter.csv"
 #define INPUT_FILE_LAPORAN "data/laporan_dokter.csv"
@@ -27,7 +27,6 @@ typedef struct {
     char preferensi_waktu[20];
 } DoctorPref;
 
-// Variabel global
 extern ShiftEntry shift_data[MAX_ENTRIES];
 extern DoctorPref doctor_data[MAX_ENTRIES];
 extern int total_shift_entries;
@@ -47,5 +46,7 @@ void proses_data();
 void tulis_laporan(const char *filename);
 void lihat_jumlah_shift();
 void lihat_pelanggaran();
+void lihat_jumlah_pelanggaran_per_dokter();
+void lihat_pelanggaran_dokter();
 
 #endif

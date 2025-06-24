@@ -28,6 +28,8 @@ static void show_schedule_view(void);
 static void show_performance_report(void);
 static void show_search_results(Dokter *hasil);
 static void show_schedule_tree_view(FILE *file, int filter_value, int filter_value2, int mode);
+static void show_all_violations_view(GtkWidget *widget, gpointer data);
+static void show_doctor_violations_dialog(GtkWidget *widget, gpointer data);
 
 // Utility function untuk menampilkan pesan status
 static void set_status_message(const char *message) {
@@ -816,6 +818,138 @@ static void show_violations_view(GtkWidget *widget, gpointer data) {
     set_status_message("Menampilkan pelanggaran jadwal.");
 }
 
+// Function untuk menampilkan pelanggaran semua dokter dalam text view
+static void show_all_violations_view(GtkWidget *widget, gpointer data) {
+    (void)widget; (void)data;
+    FILE *fp = fopen(LAPORAN_CSV_PATH, "r");
+    if (!fp) {
+        show_message_dialog(GTK_WINDOW(main_window), "Error", "Gagal membuka file laporan!", GTK_MESSAGE_ERROR);
+        return;
+    }
+
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Jumlah Pelanggaran Semua Dokter");
+    gtk_window_set_default_size(GTK_WINDOW(window), 450, 350);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 15);
+
+    GtkWidget *text_view = gtk_text_view_new();
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view), FALSE);
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+    GString *output = g_string_new("");
+    char line[1024];
+    if (fgets(line, sizeof(line), fp)) { // Skip header
+        while (fgets(line, sizeof(line), fp)) {
+            char *token = strtok(line, ",");
+            if (!token) continue;
+            char nama_dokter[100];
+            strncpy(nama_dokter, token, 99);
+            nama_dokter[99] = '\0';
+            for (int i = 0; i < 6; i++) {
+                token = strtok(NULL, ",");
+                if (!token) break;
+            }
+            token = strtok(NULL, ",");
+            if (!token) continue;
+            int jumlah_pelanggaran = atoi(token);
+            g_string_append_printf(output, "%s memiliki total pelanggaran: %d\n", nama_dokter, jumlah_pelanggaran);
+        }
+    } else {
+        g_string_append(output, "File kosong atau header tidak ditemukan.\n");
+    }
+
+    gtk_text_buffer_set_text(buffer, output->str, -1);
+    g_string_free(output, TRUE);
+    fclose(fp);
+
+    GtkWidget *scrolled = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_container_add(GTK_CONTAINER(scrolled), text_view);
+    gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
+
+    GtkWidget *close = create_styled_button("Tutup", G_CALLBACK(gtk_widget_destroy), window);
+    gtk_box_pack_start(GTK_BOX(vbox), close, FALSE, FALSE, 5);
+
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+    gtk_widget_show_all(window);
+    set_status_message("Menampilkan jumlah pelanggaran semua dokter.");
+}
+
+// Callback untuk dialog pelanggaran dokter
+static void on_doctor_violations_dialog_response(GtkDialog *dialog, gint response_id, gpointer data) {
+    if (response_id == GTK_RESPONSE_OK) {
+        const char *nama_dokter = gtk_entry_get_text(GTK_ENTRY(data));
+        if (strlen(nama_dokter) == 0) {
+            show_message_dialog(GTK_WINDOW(dialog), "Oops!", "Nama dokter harus diisi!", GTK_MESSAGE_ERROR);
+            return;
+        }
+
+        FILE *fp = fopen(LAPORAN_CSV_PATH, "r");
+        if (!fp) {
+            show_message_dialog(GTK_WINDOW(dialog), "Error", "Gagal membuka file laporan!", GTK_MESSAGE_ERROR);
+            gtk_widget_destroy(GTK_WIDGET(dialog));
+            return;
+        }
+
+        char line[1024];
+        fgets(line, sizeof(line), fp);
+        int found = 0;
+        char msg[256];
+
+        while (fgets(line, sizeof(line), fp)) {
+            char *token = strtok(line, ",");
+            if (token && strcmp(token, nama_dokter) == 0) {
+                found = 1;
+                for (int i = 0; i < 6; i++) strtok(NULL, ",");
+                char *total_pelanggaran = strtok(NULL, ",");
+                snprintf(msg, sizeof(msg), "Total pelanggaran untuk %s: %s", nama_dokter, total_pelanggaran);
+                show_message_dialog(GTK_WINDOW(dialog), "Total Pelanggaran", msg, GTK_MESSAGE_INFO);
+                break;
+            }
+        }
+
+        if (!found) {
+            snprintf(msg, sizeof(msg), "Dokter dengan nama '%s' tidak ditemukan.", nama_dokter);
+            show_message_dialog(GTK_WINDOW(dialog), "Error", msg, GTK_MESSAGE_ERROR);
+        }
+
+        fclose(fp);
+        set_status_message("Menampilkan total pelanggaran dokter.");
+    }
+    gtk_widget_destroy(GTK_WIDGET(dialog));
+}
+
+// Function untuk menampilkan dialog pelanggaran dokter
+static void show_doctor_violations_dialog(GtkWidget *widget, gpointer data) {
+    (void)widget; (void)data;
+    GtkWidget *dialog = gtk_dialog_new_with_buttons("Lihat Pelanggaran Dokter",
+                                                    GTK_WINDOW(main_window),
+                                                    GTK_DIALOG_MODAL,
+                                                    "_Tampilkan", GTK_RESPONSE_OK,
+                                                    "_Batal", GTK_RESPONSE_CANCEL,
+                                                    NULL);
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 350, 200);
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox), 20);
+
+    GtkWidget *label = gtk_label_new("Masukkan nama dokter:");
+    GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Nama dokter");
+    gtk_widget_set_tooltip_text(entry, "Masukkan nama dokter untuk melihat total pelanggaran");
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 5);
+
+    gtk_container_add(GTK_CONTAINER(content_area), vbox);
+
+    g_signal_connect(dialog, "response", G_CALLBACK(on_doctor_violations_dialog_response), entry);
+    gtk_widget_show_all(dialog);
+}
+
 // Callback functions untuk menu utama
 static void on_doctor_management_clicked(GtkWidget *widget, gpointer data) {
     (void)widget; (void)data;
@@ -1117,6 +1251,18 @@ static void show_schedule_view(void) {
     set_status_message("Menu Lihat Jadwal.");
 }
 
+// Callback untuk tombol pelanggaran semua dokter
+static void on_view_all_violations_clicked(GtkWidget *widget, gpointer data) {
+    (void)widget; (void)data;
+    show_all_violations_view(NULL, NULL);
+}
+
+// Callback untuk tombol pelanggaran per dokter
+static void on_view_doctor_violations_clicked(GtkWidget *widget, gpointer data) {
+    (void)widget; (void)data;
+    show_doctor_violations_dialog(NULL, NULL);
+}
+
 // Function untuk menampilkan performance report menu
 static void show_performance_report(void) {
     GList *children = gtk_container_get_children(GTK_CONTAINER(main_stack));
@@ -1138,11 +1284,15 @@ static void show_performance_report(void) {
     GtkWidget *btn_generate = create_styled_button("Generate Laporan Kinerja", G_CALLBACK(on_generate_report_clicked), NULL);
     GtkWidget *btn_shifts = create_styled_button("Lihat Total Shift Dokter", G_CALLBACK(on_view_shift_totals_clicked), NULL);
     GtkWidget *btn_violations = create_styled_button("Lihat Pelanggaran Jadwal", G_CALLBACK(on_view_violations_clicked), NULL);
+    GtkWidget *btn_all_violations = create_styled_button("Lihat Total Pelanggaran Semua Dokter", G_CALLBACK(on_view_all_violations_clicked), NULL);
+    GtkWidget *btn_doctor_violations = create_styled_button("Lihat Pelanggaran Per Dokter", G_CALLBACK(on_view_doctor_violations_clicked), NULL);
     GtkWidget *btn_back = create_styled_button("Kembali ke Menu Utama", G_CALLBACK(on_back_to_main_clicked), NULL);
     
     gtk_box_pack_start(GTK_BOX(box), btn_generate, FALSE, FALSE, 8);
     gtk_box_pack_start(GTK_BOX(box), btn_shifts, FALSE, FALSE, 8);
     gtk_box_pack_start(GTK_BOX(box), btn_violations, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_all_violations, FALSE, FALSE, 8);
+    gtk_box_pack_start(GTK_BOX(box), btn_doctor_violations, FALSE, FALSE, 8);
     gtk_box_pack_start(GTK_BOX(box), btn_back, FALSE, FALSE, 8);
     
     gtk_container_add(GTK_CONTAINER(main_stack), box);

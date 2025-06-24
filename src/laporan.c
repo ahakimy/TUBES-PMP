@@ -175,6 +175,75 @@ void lihat_jumlah_shift() {
     }
     fclose(fp);
 }
+void lihat_jumlah_pelanggaran_per_dokter() {
+    FILE *fp = fopen(INPUT_FILE_LAPORAN, "r");
+    if (!fp) {
+        printf("Gagal membuka file %s\n", INPUT_FILE_LAPORAN);
+        return;
+    }
+
+    char line[MAX_LINE];
+    if (!fgets(line, sizeof(line), fp)) {
+        printf("File kosong atau header tidak ditemukan.\n");
+        fclose(fp);
+        return;
+    }
+
+    while (fgets(line, sizeof(line), fp)) {
+        char *token = strtok(line, ",");
+        if (!token) continue;
+
+        char nama_dokter[MAX_NAME];
+        strncpy(nama_dokter, token, MAX_NAME - 1);
+        nama_dokter[MAX_NAME - 1] = '\0';
+
+        for (int i = 0; i < 6; i++) {
+            token = strtok(NULL, ",");
+            if (!token) break;
+        }
+
+        token = strtok(NULL, ",");
+        if (!token) continue;
+
+        int jumlah_pelanggaran = atoi(token);
+        printf("%s memiliki total pelanggaran: %d\n", nama_dokter, jumlah_pelanggaran);
+    }
+
+    fclose(fp);
+}
+
+void lihat_pelanggaran_dokter() {
+    char nama_dokter[100];
+    printf("Masukkan nama dokter: ");
+    fgets(nama_dokter, sizeof(nama_dokter), stdin);
+    nama_dokter[strcspn(nama_dokter, "\n")] = 0;
+
+    FILE *fp = fopen(INPUT_FILE_LAPORAN, "r");
+    if (!fp) {
+        printf("Gagal membuka file %s\n", INPUT_FILE_LAPORAN);
+        return;
+    }
+
+    char line[MAX_LINE];
+    fgets(line, sizeof(line), fp);
+
+    int found = 0;
+    while (fgets(line, sizeof(line), fp)) {
+        char *token = strtok(line, ",");
+        if (token && strcmp(token, nama_dokter) == 0) {
+            found = 1;
+            for (int i = 0; i < 6; i++) strtok(NULL, ",");
+            char *total_pelanggaran = strtok(NULL, ",");
+            printf("Total pelanggaran untuk %s: %s\n", nama_dokter, total_pelanggaran);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Dokter dengan nama '%s' tidak ditemukan.\n", nama_dokter);
+    }
+    fclose(fp);
+}
 
 void lihat_pelanggaran() {
     int minggu_saat_ini = 0;

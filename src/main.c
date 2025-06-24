@@ -108,43 +108,44 @@ void menu_lihat_jadwal() {
     fclose(file_jadwal);
 }
 
-// Menu Laporan Kinerja Dokter
 void menu_laporan_kinerja() {
-    // Muat data yang diperlukan untuk laporan
-    load_shift_data(JADWAL_CSV_PATH); // Memuat jadwal dokter
-    load_doctor_data(DOKTER_CSV_PATH); // Memuat preferensi dokter
-
+    load_shift_data(JADWAL_CSV_PATH);
+    load_doctor_data(DOKTER_CSV_PATH);
     if (total_shift_entries == 0 || total_doctor_entries == 0) {
         printf("Tidak ada data yang cukup untuk membuat laporan. Pastikan file jadwal dan dokter terisi.\n");
         return;
     }
 
-    printf("\n=== MENU LAPORAN KINERJA DOKTER ===\n");
+    printf("\n=== MENU LAPORAN KINERJA DOKTER --->\n");
     printf("Memproses data untuk laporan...\n");
-    proses_data(); // Memproses data untuk menghitung shift dan pelanggaran
+    proses_data();
     printf("Data selesai diproses.\n");
     
     printf("Menyimpan laporan ke %s...\n", LAPORAN_CSV_PATH);
-    tulis_laporan(LAPORAN_CSV_PATH); // Menulis laporan ke CSV
+    tulis_laporan(LAPORAN_CSV_PATH);
     printf("Laporan kinerja dokter telah dibuat.\n");
 
     int pilihan;
     do {
-        printf("\n=== SUBMENU LAPORAN KINERJA ===\n");
+        printf("\n=== SUBMENU LAPORAN KINERJA ==>\n\n");
         printf("1. Lihat Total Shift Dokter\n");
         printf("2. Lihat Pelanggaran Jadwal\n");
-        printf("0. Kembali ke Menu Utama\n");
+        printf("3. Lihat Jumlah Pelanggaran Semua Dokter\n"); // Baru
+        printf("4. Lihat Pelanggaran Dokter Tertentu\n"); // Baru
+        printf("0. Back\n");
         printf("Pilihan: ");
         if (scanf("%d", &pilihan) != 1) {
             printf("Input tidak valid. Harap masukkan angka.\n");
             clear_input_buffer();
             continue;
         }
-        clear_input_buffer(); // Bersihkan buffer setelah scanf
+        clear_input_buffer();
 
         switch (pilihan) {
             case 1: lihat_jumlah_shift(); break;
             case 2: lihat_pelanggaran(); break;
+            case 3: lihat_jumlah_pelanggaran_per_dokter(); break; // Baru
+            case 4: lihat_pelanggaran_dokter(); break; // Baru
             case 0: printf("Kembali ke menu utama...\n"); break;
             default: printf("Pilihan tidak valid.\n");
         }
